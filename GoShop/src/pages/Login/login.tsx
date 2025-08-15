@@ -2,18 +2,60 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { schema, type Schema } from "../../utils/rules";
+import { useMutation } from "@tanstack/react-query";
+import { loginAccount } from "../../api/auth.api";
+import { isAxiosUnprocessableEntityError } from "../../utils/util";
+import type { ResponseAPI } from "../../Types/util.type";
+
+type FormData = {
+  email: string;
+  password: string;
+};
+
+const loginSchema = schema.omit(["confirmPassword"]);
 
 const Login = () => {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
-  } = useForm<Schema>({
-    resolver: yupResolver(schema),
+  } = useForm<FormData>({
+    resolver: yupResolver(loginSchema),
   });
+
+  // --- Mutation đăng nhập ---
+  const loginAccountMutation = useMutation({
+    mutationFn: (body: FormData) => loginAccount(body),
+    onSuccess: (data) => {
+      console.log("Đăng nhập thành công:", data);
+      // Có thể redirect hoặc lưu token vào localStorage/context
+    },
+    onError: (error: unknown) => {
+      if (isAxiosUnprocessableEntityError<ResponseAPI<FormData>>(error)) {
+        const formError = error.response?.data?.data;
+        if (formError) {
+          Object.keys(formError).forEach((key) => {
+            setError(key as keyof FormData, {
+              message: formError[key as keyof FormData],
+              type: "Server",
+            });
+          });
+        }
+      } else {
+        console.error("Lỗi khác:", error);
+      }
+    },
+  });
+
   const onSubmit = handleSubmit((data) => {
-    console.log(data);
+    const body = {
+      email: data.email,
+      password: data.password,
+    };
+    loginAccountMutation.mutate(body);
   });
+
   return (
     <div className="bg-gray-200 min-h-screen py-12">
       <div className="max-w-7xl mx-auto px-4">
@@ -23,7 +65,7 @@ const Login = () => {
             <p className="text-gray-600 mt-2">Đăng nhập</p>
           </div>
 
-          <form className="space-y-4" onSubmit={onSubmit}>
+          <form className="space-y-4" onSubmit={onSubmit} noValidate>
             <div>
               <label
                 htmlFor="email"
@@ -63,10 +105,14 @@ const Login = () => {
 
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
+              disabled={loginAccountMutation.isPending}
+              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Đăng nhập
+              {loginAccountMutation.isPending
+                ? "Đang đăng nhập..."
+                : "Đăng nhập"}
             </button>
+
             <div className="text-sm text-gray-500">
               Bạn chưa có tài khoản?
               <Link to="/register" className="text-red-500 px-1">
