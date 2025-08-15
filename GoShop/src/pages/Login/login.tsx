@@ -1,6 +1,19 @@
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import { schema, type Schema } from "../../utils/rules";
 
 const Login = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Schema>({
+    resolver: yupResolver(schema),
+  });
+  const onSubmit = handleSubmit((data) => {
+    console.log(data);
+  });
   return (
     <div className="bg-gray-200 min-h-screen py-12">
       <div className="max-w-7xl mx-auto px-4">
@@ -10,7 +23,7 @@ const Login = () => {
             <p className="text-gray-600 mt-2">Đăng nhập</p>
           </div>
 
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={onSubmit}>
             <div>
               <label
                 htmlFor="email"
@@ -19,12 +32,14 @@ const Login = () => {
                 Email
               </label>
               <input
-                id="email"
                 type="email"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Nhập email"
+                {...register("email")}
               />
-              <div className="mt-1 text-red-600 min-h-[1.5rem] text-sm"></div>
+              <div className="mt-1 text-red-600 min-h-[1.5rem] text-sm">
+                {errors.email?.message}
+              </div>
             </div>
 
             <div>
@@ -35,12 +50,15 @@ const Login = () => {
                 Password
               </label>
               <input
-                id="password"
                 type="password"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Nhập mật khẩu"
+                autoComplete="on"
+                {...register("password")}
               />
-              <div className="mt-1 text-red-600 min-h-[1.5rem] text-sm"></div>
+              <div className="mt-1 text-red-600 min-h-[1.5rem] text-sm">
+                {errors.password?.message}
+              </div>
             </div>
 
             <button

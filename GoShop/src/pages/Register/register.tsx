@@ -1,6 +1,21 @@
+import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import { schema, type Schema } from "../../utils/rules";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 const Register = () => {
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    formState: { errors },
+  } = useForm<Schema>({
+    resolver: yupResolver(schema),
+  });
+  const onSubmit = handleSubmit((data) => {
+    console.log(data);
+  });
+
   return (
     <div className="bg-gray-200 min-h-screen py-12">
       <div className="max-w-7xl mx-auto px-4">
@@ -10,7 +25,7 @@ const Register = () => {
             <p className="text-gray-600 mt-2">Đăng ký</p>
           </div>
 
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={onSubmit} noValidate>
             <div>
               <label
                 htmlFor="email"
@@ -19,12 +34,14 @@ const Register = () => {
                 Email
               </label>
               <input
-                id="email"
                 type="email"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Nhập email"
+                {...register("email")}
               />
-              <div className="mt-1 text-red-600 min-h-[1.5rem] text-sm"></div>
+              <div className="mt-1 text-red-600 min-h-[1.5rem] text-sm">
+                {errors.email?.message}
+              </div>
             </div>
 
             <div>
@@ -35,12 +52,15 @@ const Register = () => {
                 Password
               </label>
               <input
-                id="password"
                 type="password"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Nhập mật khẩu"
+                autoComplete="on"
+                {...register("password")}
               />
-              <div className="mt-1 text-red-600 min-h-[1.5rem] text-sm"></div>
+              <div className="mt-1 text-red-600 min-h-[1.5rem] text-sm">
+                {errors.password?.message}
+              </div>
             </div>
             <div>
               <label
@@ -54,8 +74,18 @@ const Register = () => {
                 type="password"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Nhập lại mật khẩu"
+                autoComplete="on"
+                {...register("confirmPassword", {
+                  validate: (value) => {
+                    return (
+                      value === getValues("password") || "Mật khẩu không khớp"
+                    );
+                  },
+                })}
               />
-              <div className="mt-1 text-red-600 min-h-[1.5rem] text-sm"></div>
+              <div className="mt-1 text-red-600 min-h-[1.5rem] text-sm">
+                {errors.confirmPassword?.message}
+              </div>
             </div>
 
             <button
