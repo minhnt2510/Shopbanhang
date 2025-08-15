@@ -8,10 +8,9 @@ interface Props {
 const RegisterLayout = ({ children }: Props) => {
   return (
     <div>
-      <RegisterHeader/>
-      <h1>RegisterLayout</h1>
+      <RegisterHeader />
       {children}
-      <Footer/>
+      <Footer />
     </div>
   );
 };
