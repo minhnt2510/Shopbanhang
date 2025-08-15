@@ -22,7 +22,7 @@ const useRouteElement = () => {
       path: "/register",
       element: (
         <RegisterLayout>
-          <Register />,
+          <Register />
         </RegisterLayout>
       ),
     },
