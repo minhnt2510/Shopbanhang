@@ -5,27 +5,57 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@tanstack/react-query";
 import { registerAccount } from "../../api/auth.api";
 import { omit } from "lodash";
+import { isAxiosUnprocessableEntityError } from "../../utils/util";
+import type { ResponseAPI } from "../../Types/util.type";
 
+type FormData = {
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
 const Register = () => {
   const {
     register,
     handleSubmit,
     getValues,
+    setError,
     formState: { errors },
   } = useForm<Schema>({
     resolver: yupResolver(schema),
   });
-  const onSubmit = handleSubmit((data) => {
-    const body = omit(data, ["confirmPassword"]);
-    registerAccountMutation.mutate(body, {
-      onSuccess: (data) => {
-        console.log(data);
-      },
-    });
-  });
+  // --- Mutation đăng ký ---
   const registerAccountMutation = useMutation({
     mutationFn: (body: Omit<Schema, "confirmPassword">) =>
       registerAccount(body),
+    onSuccess: (data) => {
+      console.log("Đăng ký thành công:", data);
+    },
+    onError: (error: unknown) => {
+      if (
+        isAxiosUnprocessableEntityError<
+          ResponseAPI<Omit<FormData, "confirmPassword">>
+        >(error)
+      ) {
+        const formError = error.response?.data?.data;
+        if (formError) {
+          Object.keys(formError).forEach((key) => {
+            setError(key as keyof Omit<FormData, "confirmPassword">, {
+              message:
+                formError[key as keyof Omit<FormData, "confirmPassword">],
+              type: "Server",
+            });
+          });
+        }
+      } else {
+        console.error("Lỗi khác:", error);
+      }
+    },
+  });
+
+  // Thêm hàm onSubmit
+  const onSubmit = handleSubmit((data) => {
+    const body = omit(data, ["confirmPassword"]);
+    registerAccountMutation.mutate(body);
   });
 
   return (
