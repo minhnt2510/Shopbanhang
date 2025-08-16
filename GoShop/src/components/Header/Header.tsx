@@ -1,5 +1,6 @@
 import { Search, ShoppingCart, User, Menu, Heart, Bell } from "lucide-react";
 import Dropdown from "../DropDown";
+import { Link } from "react-router-dom";
 
 function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
   return (
@@ -114,27 +115,29 @@ const Header = () => {
             </Dropdown>
 
             {/* user menu */}
-            <Dropdown
-              trigger={
-                <Button className="bg-transparent text-white hover:bg-blue-600">
-                  <User className="w-5 h-5" />
-                </Button>
-              }
-            >
-              <button className="block w-full text-left px-3 py-1 hover:bg-gray-100 rounded">
-                Tài khoản của tôi
-              </button>
-              <button className="block w-full text-left px-3 py-1 hover:bg-gray-100 rounded">
-                Đơn hàng
-              </button>
-              <button className="block w-full text-left px-3 py-1 hover:bg-gray-100 rounded">
-                Yêu thích
-              </button>
-              <div className="border-t my-1" />
-              <button className="block w-full text-left px-3 py-1 hover:bg-gray-100 rounded">
-                Đăng xuất
-              </button>
-            </Dropdown>
+            <Link to="/profile">
+              <Dropdown
+                trigger={
+                  <Button className="bg-transparent text-white hover:bg-blue-600">
+                    <User className="w-5 h-5" />
+                  </Button>
+                }
+              >
+                <button className="block w-full text-left px-3 py-1 hover:bg-gray-100 rounded">
+                  Tài khoản của tôi
+                </button>
+                <button className="block w-full text-left px-3 py-1 hover:bg-gray-100 rounded">
+                  Đơn hàng
+                </button>
+                <button className="block w-full text-left px-3 py-1 hover:bg-gray-100 rounded">
+                  Yêu thích
+                </button>
+                <div className="border-t my-1" />
+                <button className="block w-full text-left px-3 py-1 hover:bg-gray-100 rounded">
+                  Đăng xuất
+                </button>
+              </Dropdown>
+            </Link>
           </div>
         </div>
       </div>
