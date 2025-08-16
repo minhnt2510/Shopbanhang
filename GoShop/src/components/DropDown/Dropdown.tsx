@@ -28,7 +28,7 @@ export function Dropdown({
   // hover thay vì click
   const hover = useHover(context, {
     move: false,
-    handleClose: safePolygon(), // giúp không bị đóng ngay khi rê chuột sang menu
+    handleClose: safePolygon(), 
   });
   const dismiss = useDismiss(context);
   const role = useRole(context);
