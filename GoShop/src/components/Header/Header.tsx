@@ -1,6 +1,10 @@
 import { Search, ShoppingCart, User, Menu, Heart, Bell } from "lucide-react";
 import Dropdown from "../DropDown";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AppContext } from "../../Context/app.context";
+import { useMutation } from "@tanstack/react-query";
+import { logout } from "../../api/auth.api";
 
 function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
   return (
@@ -31,6 +35,16 @@ function Button({
 }
 
 const Header = () => {
+  const { setIsAuthenticated } = useContext(AppContext);
+  const logoutMutation = useMutation({
+    mutationFn: logout,
+    onSuccess: () => {
+      setIsAuthenticated(false);
+    },
+  });
+  const handleLogout = () => {
+    logoutMutation.mutate();
+  };
   return (
     <div className="bg-gradient-to-r from-blue-600 to-blue-500 shadow-lg">
       {/* top bar */}
@@ -115,29 +129,30 @@ const Header = () => {
             </Dropdown>
 
             {/* user menu */}
-            <Link to="/profile">
-              <Dropdown
-                trigger={
-                  <Button className="bg-transparent text-white hover:bg-blue-600">
-                    <User className="w-5 h-5" />
-                  </Button>
-                }
+            <Dropdown
+              trigger={
+                <Button className="bg-transparent text-white hover:bg-blue-600">
+                  <User className="w-5 h-5" />
+                </Button>
+              }
+            >
+              <button className="block w-full text-left px-3 py-1 hover:bg-gray-100 rounded">
+                Tài khoản của tôi
+              </button>
+              <button className="block w-full text-left px-3 py-1 hover:bg-gray-100 rounded">
+                Đơn hàng
+              </button>
+              <button className="block w-full text-left px-3 py-1 hover:bg-gray-100 rounded">
+                Yêu thích
+              </button>
+              <div className="border-t my-1" />
+              <button
+                onClick={handleLogout}
+                className="block w-full text-left px-3 py-1 hover:bg-gray-100 rounded"
               >
-                <button className="block w-full text-left px-3 py-1 hover:bg-gray-100 rounded">
-                  Tài khoản của tôi
-                </button>
-                <button className="block w-full text-left px-3 py-1 hover:bg-gray-100 rounded">
-                  Đơn hàng
-                </button>
-                <button className="block w-full text-left px-3 py-1 hover:bg-gray-100 rounded">
-                  Yêu thích
-                </button>
-                <div className="border-t my-1" />
-                <button className="block w-full text-left px-3 py-1 hover:bg-gray-100 rounded">
-                  Đăng xuất
-                </button>
-              </Dropdown>
-            </Link>
+                Đăng xuất
+              </button>
+            </Dropdown>
           </div>
         </div>
       </div>

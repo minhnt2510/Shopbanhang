@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { schema, type Schema } from "../../utils/rules";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@tanstack/react-query";
@@ -7,6 +7,8 @@ import { registerAccount } from "../../api/auth.api";
 import { omit } from "lodash";
 import { isAxiosUnprocessableEntityError } from "../../utils/util";
 import type { ResponseAPI } from "../../Types/util.type";
+import { AppContext } from "../../Context/app.context";
+import { useContext } from "react";
 
 type FormData = {
   email: string;
@@ -14,6 +16,8 @@ type FormData = {
   confirmPassword: string;
 };
 const Register = () => {
+  const { setIsAuthenticated } = useContext(AppContext);
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -29,6 +33,8 @@ const Register = () => {
       registerAccount(body),
     onSuccess: (data) => {
       console.log("Đăng ký thành công:", data);
+      setIsAuthenticated(true);
+      navigate("/");
     },
     onError: (error: unknown) => {
       if (

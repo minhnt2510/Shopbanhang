@@ -1,8 +1,18 @@
-import axios, { type AxiosInstance } from "axios";
+import axios, { AxiosError, type AxiosInstance } from "axios";
+import { toast } from "react-toastify";
+import {
+  clearAccessTokenFromLS,
+  getAccessTokenFromLS,
+  saveAccesTokenToLS,
+} from "./auth";
+import type { AuthResponse } from "../Types/auth.type";
 
 class Http {
   instance: AxiosInstance;
+  private accessToken: string;
+
   constructor() {
+    this.accessToken = getAccessTokenFromLS();
     this.instance = axios.create({
       baseURL: "https://api-ecom.duthanhduoc.com/",
       timeout: 10000,
@@ -10,17 +20,47 @@ class Http {
         "Content-Type": "application/json",
       },
     });
+
+    // Request interceptor
+    this.instance.interceptors.request.use(
+      (config) => {
+        if (this.accessToken && config.headers) {
+          config.headers.Authorization = this.accessToken;
+        }
+        return config;
+      },
+      (error) => Promise.reject(error)
+    );
+
+    // Response interceptor
     this.instance.interceptors.response.use(
-      function (response) {
+      (response) => {
+        const { url } = response.config;
+        if (url === "/login" || url === "/register") {
+          const authResponse = response.data as AuthResponse;
+          this.accessToken = authResponse?.data?.access_token || "";
+
+          saveAccesTokenToLS(this.accessToken);
+        } else if (url === "/logout") {
+          this.accessToken = "";
+          clearAccessTokenFromLS();
+        }
         return response;
       },
-      function (error) {
-        
+      (error: AxiosError) => {
+        if (
+          error.response?.status !== axios.HttpStatusCode.UnprocessableEntity
+        ) {
+          const data: any | undefined = error.response?.data;
+          const message = data?.message || error.message;
+          toast.error(message);
+        }
         return Promise.reject(error);
       }
     );
   }
 }
+
 const http = new Http().instance;
 
 export default http;

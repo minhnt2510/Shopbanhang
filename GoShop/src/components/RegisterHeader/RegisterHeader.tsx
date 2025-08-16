@@ -11,18 +11,30 @@ const RegisterHeader = () => {
             </Link>
           </div>
           <div className="flex items-center space-x-4">
-            <Link
-              to="/login"
+            <a
+              href="#support"
               className="text-gray-600 hover:text-gray-900 font-medium transition-colors"
             >
-              Sign In
-            </Link>
-            <Link
-              to="/register"
+              Liên hệ hỗ trợ
+            </a>
+            <a
+              href="#about"
+              className="text-gray-600 hover:text-gray-900 font-medium transition-colors"
+            >
+              Về chúng tôi
+            </a>
+            <a
+              href="#faq"
+              className="text-gray-600 hover:text-gray-900 font-medium transition-colors"
+            >
+              FAQ
+            </a>
+            <a
+              href="#contact"
               className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
             >
-              Sign Up
-            </Link>
+              Liên hệ
+            </a>
           </div>
         </div>
       </div>

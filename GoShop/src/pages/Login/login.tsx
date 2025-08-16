@@ -1,11 +1,13 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { schema, type Schema } from "../../utils/rules";
 import { useMutation } from "@tanstack/react-query";
 import { loginAccount } from "../../api/auth.api";
 import { isAxiosUnprocessableEntityError } from "../../utils/util";
 import type { ResponseAPI } from "../../Types/util.type";
+import { useContext } from "react";
+import { AppContext } from "../../Context/app.context";
 
 type FormData = {
   email: string;
@@ -15,6 +17,9 @@ type FormData = {
 const loginSchema = schema.omit(["confirmPassword"]);
 
 const Login = () => {
+  const { setIsAuthenticated } = useContext(AppContext);
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -30,6 +35,8 @@ const Login = () => {
     onSuccess: (data) => {
       console.log("Đăng nhập thành công:", data);
       // Có thể redirect hoặc lưu token vào localStorage/context
+      setIsAuthenticated(true);
+      navigate("/");
     },
     onError: (error: unknown) => {
       if (isAxiosUnprocessableEntityError<ResponseAPI<FormData>>(error)) {
