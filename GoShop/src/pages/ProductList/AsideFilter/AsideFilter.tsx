@@ -6,10 +6,7 @@ const AsideFilter = () => {
   return (
     <>
       <div className="py-4 px-3">
-        <Link
-          to="/"
-          className="flex items-center font-bold  hover:text-gray-500 gap-2"
-        >
+        <Link to="/" className="flex items-center font-bold gap-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -29,12 +26,12 @@ const AsideFilter = () => {
         <div className="bg-gray-300 h-[1px] my-4" />
         <ul>
           <li className="py-2 pl-4 relative ">
-            <Link to="/" className="hover:text-gray-500">
+            <Link to="/" className="">
               Danh mục 1
             </Link>
           </li>
           <li className="py-2 pl-4 relative">
-            <Link to="/" className="hover:text-gray-500">
+            <Link to="/" className="">
               Danh mục 2
             </Link>
           </li>
@@ -65,17 +62,18 @@ const AsideFilter = () => {
           <div className="my-5">
             <div>Khoản giá</div>
             <form className="mt-2">
-              <div className="flex items-start gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <Input
                   placeholder="TỪ"
-                  className="w-25 rounded-xl border-gray-500"
+                  className="w-full sm:flex-1 rounded-xl border border-gray-500"
                 />
                 <Input
                   placeholder="ĐẾN"
-                  className="w-25 rounded-xl border-gray-500"
+                  className="w-full sm:flex-1 rounded-xl border border-gray-500"
                 />
               </div>
-              <Button className="bg-orange-500 mt-3 w-52 h-10 rounded-2xl text-white cursor-pointer uppercase">
+
+              <Button className="bg-orange-500 mt-3 w-full h-10 rounded-2xl text-white cursor-pointer uppercase">
                 áp dụng
               </Button>
             </form>
@@ -184,7 +182,7 @@ const AsideFilter = () => {
           </li>
         </ul>
         <div className="bg-gray-300 h-[1px] my-4" />
-        <Button className="bg-orange-500 mt-3 w-52 h-10 rounded-2xl text-white cursor-pointer uppercase">
+        <Button className="bg-orange-500 mt-3 w-full h-10 rounded-2xl text-white cursor-pointer uppercase">
           xóa tất cả
         </Button>
       </div>
