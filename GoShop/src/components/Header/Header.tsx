@@ -5,34 +5,8 @@ import { useContext } from "react";
 import { AppContext } from "../../Context/app.context";
 import { useMutation } from "@tanstack/react-query";
 import { logout } from "../../api/auth.api";
-
-function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
-  return (
-    <input
-      {...props}
-      className={`border px-3 py-2 rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 ${
-        props.className || ""
-      }`}
-    />
-  );
-}
-
-function Button({
-  children,
-  className,
-  ...props
-}: React.ButtonHTMLAttributes<HTMLButtonElement>) {
-  return (
-    <button
-      {...props}
-      className={`px-4 py-2 rounded font-medium hover:opacity-90 ${
-        className || ""
-      }`}
-    >
-      {children}
-    </button>
-  );
-}
+import Input from "../Input";
+import Button from "../Button/Button";
 
 const Header = () => {
   const { setIsAuthenticated, isAuthenticated } = useContext(AppContext);

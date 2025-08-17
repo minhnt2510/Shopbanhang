@@ -1,3 +1,3 @@
-import SoftProductList from "./SoftProductList";
+import SortProductList from "./SortProductList";
 
-export default SoftProductList;
+export default SortProductList;
