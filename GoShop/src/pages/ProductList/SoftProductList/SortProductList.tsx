@@ -15,7 +15,7 @@ const SoftProductList = () => {
           </button>
           <select
             className="h-8 px-4 capitalize  bg-white text-black text-sm cursor-pointer border-0 outline-none  "
-            value=""
+            defaultValue=""
           >
             <option value="" disabled>
               Giá
