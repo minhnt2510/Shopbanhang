@@ -1,28 +1,32 @@
 import { Link } from "react-router-dom";
+import type { Product as ProductType } from "../../../Types/product.type";
+import { formatCurrency, formatNumberToSocialStyle } from "../../../utils/util";
 
-const Product = () => {
+interface Props {
+  product: ProductType;
+}
+const Product = ({ product }: Props) => {
   return (
     <Link to="">
       <div className="bg-white rounded-sm shadow hover:translate-y-[-0.0625rem] hover:shadow-md duration-100 transition-transform overflow-hidden ">
         <div className="w-full pt-[100%] relative ">
           <img
-            src="https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lkk5ruzefoiy83_tn.webp"
-            alt=""
+            src={product.image}
+            alt={product.name}
             className="absolute top-0 left-0 bg-white w-full h-full object-cover"
           />
         </div>
         <div className="p-2 overflow-hidden">
           <div className="min-h-[1.75rem] line-clamp-2 text-sm">
-            Thắt Lưng Nam Mặt Xoay Khóa Tự Động Cao Cấp,Dây Nịt Nam Thắt Lưng Da
-            Mặt Xoay Khóa Kim Loại
+            {product.name}
           </div>
           <div className="flex items-center mt-3">
             <div className="line-through max-w-[50%] text-gray-500 truncate text-xs">
-              ₫5.000
+              {formatCurrency(product.price_before_discount)}
             </div>
             <div className="text-orange-600 truncate ml-1">
               <span className="text-xs">₫</span>
-              <span className="">2.000</span>
+              <span className="">{formatCurrency(product.price)}</span>
             </div>
           </div>
           <div className="mt-3 flex items-center justify-end">
@@ -55,7 +59,9 @@ const Product = () => {
               </div>
               <div className="pl-2 text-xs">
                 <span className="ml-1 mr-1">Đã bán</span>
-                <span className="">5.77k</span>
+                <span className="">
+                  {formatNumberToSocialStyle(product.sold)}
+                </span>
               </div>
             </div>
           </div>
