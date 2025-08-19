@@ -1,12 +1,13 @@
 import type {
   Product,
-  productList,
+  productList, // sửa lại PascalCase
   ProductListConfig,
 } from "../Types/product.type";
 import type { ResponseAPI } from "../Types/util.type";
 import http from "../utils/http";
 
-const URL = "products";
+const URL = "products" as const;
+
 const productApi = {
   getProducts(params: ProductListConfig) {
     return http.get<ResponseAPI<productList>>(URL, {
@@ -17,4 +18,5 @@ const productApi = {
     return http.get<ResponseAPI<Product>>(`${URL}/${id}`);
   },
 };
+
 export default productApi;

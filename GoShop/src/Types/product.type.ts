@@ -27,12 +27,12 @@ export interface productList {
 }
 
 export interface ProductListConfig {
-  page?: number;
-  limit?: number;
+  page?: number | string;
+  limit?: number | string;
   sort_by?: "createAt" | "vỉew" | "sold" | "price";
-  exclude?: string;
-  rating_filter?: number;
-  price_min?: number;
-  price_max?: number;
+  exclude?: string | string;
+  rating_filter?: number | string;
+  price_min?: number | string;
+  price_max?: number | string;
   name?: string;
 }

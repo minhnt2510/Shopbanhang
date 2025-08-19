@@ -1,46 +1,82 @@
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { omitBy, isUndefined } from "lodash";
 import AsideFilter from "./AsideFilter";
 import Product from "./Product/Product";
-import SoftProductList from "./SoftProductList";
-import useQueryParam from "../../hooks/useQueryParam";
+import type { ProductListConfig } from "../../Types/product.type";
 import productApi from "../../api/product.api";
+import SortProductList from "./SoftProductList";
 import Paginate from "../../components/Paginate";
-import { useState } from "react";
+import useQueryParam from "../../hooks/useQueryParam";
 
-const ProductList = () => {
+export type QueryConfig = {
+  [key in keyof ProductListConfig]?: string;
+};
+
+export default function ProductList() {
+  // lấy query từ url
   const queryParams = useQueryParam();
   const [page, setPage] = useState(1);
-  const { data } = useQuery({
-    queryKey: ["products", queryParams],
-    queryFn: () => {
-      return productApi.getProducts(queryParams);
+
+  // config query để truyền vào API
+  const queryConfig: QueryConfig = omitBy(
+    {
+      page: queryParams.page || String(page), // fallback sang state page
+      limit: queryParams.limit || "10",
+      sort_by: queryParams.sort_by,
+      exclude: queryParams.exclude,
+      name: queryParams.name,
+      order: queryParams.order,
+      price_max: queryParams.price_max,
+      price_min: queryParams.price_min,
+      rating_filter: queryParams.rating_filter,
     },
+    isUndefined
+  );
+
+  // gọi API với react-query
+  const { data } = useQuery({
+    queryKey: ["products", queryConfig],
+    queryFn: () => productApi.getProducts(queryConfig as ProductListConfig),
+    placeholderData: keepPreviousData,
   });
+
+  // fallback dữ liệu khi API chưa trả về
+  const products = data?.data?.data?.products ?? [];
+  const pageSize = data?.data?.data?.paginate?.page_size ?? 0;
+
   return (
     <div className="bg-gray-200 py-6">
       <div className="container">
         <div className="grid grid-cols-12 gap-6">
-          {/* bên aside */}
+          {/* AsideFilter */}
           <div className="col-span-3">
             <AsideFilter />
           </div>
+
+          {/* Main content */}
           <div className="col-span-9">
-            <SoftProductList />
-            <div className="mt-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
-              {/* generate ra 30 product */}
-              {data &&
-                data.data.data?.products.map((product) => (
-                  <div className="col-span-1 " key={product._id}>
-                    <Product product={product} />
-                  </div>
-                ))}
+            <SortProductList />
+
+            {/* Danh sách sản phẩm */}
+            <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+              {products.map((product) => (
+                <div className="col-span-1" key={product._id}>
+                  <Product product={product} />
+                </div>
+              ))}
             </div>
-            <Paginate page={page} setPage={setPage} pageSize={4} />
+
+            {/* Pagination */}
+            <Paginate
+              page={page}
+              setPage={setPage}
+              pageSize={7}
+              queryConfig={queryConfig}
+            />
           </div>
         </div>
       </div>
     </div>
   );
-};
-
-export default ProductList;
+}
