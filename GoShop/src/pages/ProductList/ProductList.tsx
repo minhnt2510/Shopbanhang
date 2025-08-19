@@ -4,16 +4,18 @@ import Product from "./Product/Product";
 import SoftProductList from "./SoftProductList";
 import useQueryParam from "../../hooks/useQueryParam";
 import productApi from "../../api/product.api";
+import Paginate from "../../components/Paginate";
+import { useState } from "react";
 
 const ProductList = () => {
   const queryParams = useQueryParam();
+  const [page, setPage] = useState(1);
   const { data } = useQuery({
     queryKey: ["products", queryParams],
     queryFn: () => {
       return productApi.getProducts(queryParams);
     },
   });
-  console.log(data);
   return (
     <div className="bg-gray-200 py-6">
       <div className="container">
@@ -33,6 +35,7 @@ const ProductList = () => {
                   </div>
                 ))}
             </div>
+            <Paginate page={page} setPage={setPage} pageSize={4} />
           </div>
         </div>
       </div>
