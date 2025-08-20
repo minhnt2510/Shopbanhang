@@ -23,16 +23,18 @@ export interface productList {
     page: number;
     limit: number;
     page_size: number;
+    total: number; // 👈 để ở đây thay vì trong queryConfig
   };
 }
 
 export interface ProductListConfig {
   page?: number | string;
   limit?: number | string;
-  sort_by?: "createAt" | "vỉew" | "sold" | "price";
+  sort_by?: "createdAt" | "view" | "sold" | "price";
   exclude?: string | string;
   rating_filter?: number | string;
   price_min?: number | string;
   price_max?: number | string;
   name?: string;
+  order?: "asc" | "desc";
 }

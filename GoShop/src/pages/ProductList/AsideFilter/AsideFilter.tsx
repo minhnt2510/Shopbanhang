@@ -1,8 +1,12 @@
 import { Link } from "react-router-dom";
 import Input from "../../../components/Input";
 import Button from "../../../components/Button";
-
-const AsideFilter = () => {
+import type { QueryConfig } from "../ProductList";
+interface AsideFilterProps {
+  queryConfig: QueryConfig;
+  pageSize: number;
+}
+const AsideFilter = ({}: AsideFilterProps) => {
   return (
     <>
       <div className="py-4 px-3">

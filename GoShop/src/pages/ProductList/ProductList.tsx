@@ -50,13 +50,13 @@ export default function ProductList() {
       <div className="container">
         <div className="grid grid-cols-12 gap-6">
           {/* AsideFilter */}
-          <div className="col-span-3">
-            <AsideFilter />
+          <div className="col-span-3 ">
+            <AsideFilter queryConfig={queryConfig} pageSize={pageSize} />
           </div>
 
           {/* Main content */}
           <div className="col-span-9">
-            <SortProductList />
+            <SortProductList pageSize={pageSize} queryConfig={queryConfig} />
 
             {/* Danh sách sản phẩm */}
             <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
