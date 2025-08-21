@@ -8,6 +8,7 @@ import productApi from "../../api/product.api";
 import SortProductList from "./SoftProductList";
 import Paginate from "../../components/Paginate";
 import useQueryParam from "../../hooks/useQueryParam";
+import categoryApi from "../../api/category.api";
 
 export type QueryConfig = {
   [key in keyof ProductListConfig]?: string;
@@ -15,7 +16,7 @@ export type QueryConfig = {
 
 export default function ProductList() {
   // lấy query từ url
-  const queryParams = useQueryParam();
+  const queryParams: QueryConfig = useQueryParam();
   const [page, setPage] = useState(1);
 
   // config query để truyền vào API
@@ -30,20 +31,26 @@ export default function ProductList() {
       price_max: queryParams.price_max,
       price_min: queryParams.price_min,
       rating_filter: queryParams.rating_filter,
+      category: queryParams.category,
     },
     isUndefined
   );
 
   // gọi API với react-query
-  const { data } = useQuery({
+  const { data: productData } = useQuery({
     queryKey: ["products", queryConfig],
     queryFn: () => productApi.getProducts(queryConfig as ProductListConfig),
     placeholderData: keepPreviousData,
   });
 
+  const { data: categoriesData } = useQuery({
+    queryKey: ["categories"],
+    queryFn: () => categoryApi.getCategories(),
+  });
+
   // fallback dữ liệu khi API chưa trả về
-  const products = data?.data?.data?.products ?? [];
-  const pageSize = data?.data?.data?.paginate?.page_size ?? 0;
+  const products = productData?.data?.data?.products ?? [];
+  const pageSize = productData?.data?.data?.paginate?.page_size ?? 0;
 
   return (
     <div className="bg-gray-200 py-6">
@@ -51,7 +58,10 @@ export default function ProductList() {
         <div className="grid grid-cols-12 gap-6">
           {/* AsideFilter */}
           <div className="col-span-3 ">
-            <AsideFilter queryConfig={queryConfig} pageSize={pageSize} />
+            <AsideFilter
+              categories={categoriesData?.data.data || []}
+              queryConfig={queryConfig}
+            />
           </div>
 
           {/* Main content */}
