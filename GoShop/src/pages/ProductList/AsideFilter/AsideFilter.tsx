@@ -1,17 +1,43 @@
 import { Link, createSearchParams, useNavigate } from "react-router-dom";
-import Input from "../../../components/Input";
 import Button from "../../../components/Button";
 import type { QueryConfig } from "../ProductList";
 import type { Category } from "../../../Types/category.type";
+import InputNumber from "../../../components/InputNumber";
+import { useForm, Controller, type Resolver } from "react-hook-form";
+import { Watch } from "lucide-react";
+import { number } from "yup";
+import { schema, type Schema } from "../../../utils/rules";
+import { yupResolver } from "@hookform/resolvers/yup";
+import type { NoUndefinedField } from "../../../Types/util.type";
 
 interface Props {
   queryConfig: QueryConfig;
   categories: Category[];
 }
 
+type FormData = NoUndefinedField<Pick<Schema, "price_max" | "price_min">>;
+
+const priceSchema = schema.pick(["price_max", "price_min"]);
+
 const AsideFilter = ({ categories, queryConfig }: Props) => {
   const { category } = queryConfig;
-  const navigate = useNavigate();
+
+  const {
+    control,
+    handleSubmit,
+    watch,
+    trigger,
+    formState: { errors },
+  } = useForm<FormData>({
+    defaultValues: {
+      price_min: "",
+      price_max: "",
+    },
+    resolver: yupResolver(priceSchema) as Resolver<FormData>,
+  });
+  console.log(errors);
+  const zx = watch();
+  console.log(zx);
 
   const handleRemoveAll = () => {
     navigate({
@@ -19,6 +45,18 @@ const AsideFilter = ({ categories, queryConfig }: Props) => {
       search: createSearchParams({}).toString(),
     });
   };
+
+  const navigate = useNavigate();
+  const onSubmit = handleSubmit((data) => {
+    navigate({
+      pathname: "/",
+      search: createSearchParams({
+        ...queryConfig,
+        price_max: data.price_max,
+        price_min: data.price_min,
+      }).toString(),
+    });
+  });
 
   return (
     <div className="py-4 px-3">
@@ -100,16 +138,47 @@ const AsideFilter = ({ categories, queryConfig }: Props) => {
       {/* Khoảng giá */}
       <div className="my-5">
         <div>Khoảng giá</div>
-        <form className="mt-2">
+        <form className="mt-2" onSubmit={onSubmit}>
           <div className="flex flex-col sm:flex-row gap-2">
-            <Input
-              placeholder="TỪ"
-              className="w-full sm:flex-1 rounded-xl border border-gray-500"
+            <Controller
+              render={({ field }) => {
+                return (
+                  <InputNumber
+                    placeholder="TỪ"
+                    className="w-full sm:flex-1 rounded-xl border border-gray-500"
+                    onChange={(event) => {
+                      field.onChange(event);
+                      trigger("price_max");
+                    }}
+                    value={field.value}
+                  />
+                );
+              }}
+              control={control}
+              name="price_min"
             />
-            <Input
-              placeholder="ĐẾN"
-              className="w-full sm:flex-1 rounded-xl border border-gray-500"
+
+            <Controller
+              render={({ field }) => {
+                return (
+                  <InputNumber
+                    placeholder="Đến"
+                    className="w-full sm:flex-1 rounded-xl border border-gray-500"
+                    onChange={(event) => {
+                      field.onChange(event);
+                      trigger("price_min");
+                    }}
+                    value={field.value}
+                    ref={field.ref}
+                  />
+                );
+              }}
+              control={control}
+              name="price_max"
             />
+          </div>
+          <div className="mt-1 text-red-600 min-h-[1.5rem] text-sm text-center">
+            {errors.price_min?.message}
           </div>
           <Button className="bg-orange-500 mt-3 w-full h-10 rounded-2xl text-white uppercase">
             áp dụng

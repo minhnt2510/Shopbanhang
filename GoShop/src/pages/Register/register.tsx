@@ -10,11 +10,8 @@ import type { ResponseAPI } from "../../Types/util.type";
 import { AppContext } from "../../Context/app.context";
 import { useContext } from "react";
 
-type FormData = {
-  email: string;
-  password: string;
-  confirmPassword: string;
-};
+type FormData = Pick<Schema, "email" | "password" | "confirmPassword">;
+const registerSchema = schema.pick(["email", "password", "confirmPassword"]);
 const Register = () => {
   const { setIsAuthenticated } = useContext(AppContext);
   const navigate = useNavigate();
@@ -25,7 +22,7 @@ const Register = () => {
     setError,
     formState: { errors },
   } = useForm<Schema>({
-    resolver: yupResolver(schema),
+    resolver: yupResolver(registerSchema),
   });
   // --- Mutation đăng ký ---
   const registerAccountMutation = useMutation({

@@ -9,12 +9,8 @@ import { useContext } from "react";
 import { AppContext } from "../../Context/app.context";
 import { loginAccount } from "../../api/auth.api";
 
-type FormData = {
-  email: string;
-  password: string;
-};
-
-const loginSchema = schema.omit(["confirmPassword"]);
+type FormData = Pick<Schema, "email" | "password">;
+const loginSchema = schema.pick(["email", "password"]);
 
 const Login = () => {
   const { setIsAuthenticated } = useContext(AppContext);
