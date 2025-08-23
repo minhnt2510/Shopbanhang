@@ -9,6 +9,8 @@ import { number } from "yup";
 import { schema, type Schema } from "../../../utils/rules";
 import { yupResolver } from "@hookform/resolvers/yup";
 import type { NoUndefinedField } from "../../../Types/util.type";
+import RatingStars from "../RatingStars";
+import { omit } from "lodash";
 
 interface Props {
   queryConfig: QueryConfig;
@@ -42,7 +44,14 @@ const AsideFilter = ({ categories, queryConfig }: Props) => {
   const handleRemoveAll = () => {
     navigate({
       pathname: "/",
-      search: createSearchParams({}).toString(),
+      search: createSearchParams(
+        omit(queryConfig, [
+          "price_max",
+          "price_min",
+          "rating_filter",
+          "category",
+        ])
+      ).toString(),
     });
   };
 
@@ -190,52 +199,7 @@ const AsideFilter = ({ categories, queryConfig }: Props) => {
 
       {/* Đánh giá */}
       <div className="text-sm">Đánh giá</div>
-      <ul className="my-3">
-        {[5, 4, 3, 2, 1].map((star) => (
-          <li className="flex py-1 pl-2 gap-1" key={star}>
-            <Link to="/" className="flex items-center text-sm">
-              {Array(star)
-                .fill(0)
-                .map((_, index) => {
-                  const gradientId = `ratingStarGradient-${star}-${index}`;
-                  const polygonId = `ratingStar-${star}-${index}`;
-                  return (
-                    <svg viewBox="0 0 19 8" key={index} className="w-4 h-4">
-                      <defs>
-                        <linearGradient
-                          id={gradientId}
-                          x1="50%"
-                          x2="50%"
-                          y1="0%"
-                          y2="100%"
-                        >
-                          <stop offset={0} stopColor="#ffca11" />
-                          <stop offset={1} stopColor="#ffad27" />
-                        </linearGradient>
-                        <polygon
-                          id={polygonId}
-                          points="14.910357 6.35294118 12.4209136 7.66171903 12.896355 4.88968305 
-                          10.8823529 2.92651626 13.6656353 2.52208166 
-                          14.910357 0 16.1550787 2.52208166 
-                          18.9383611 2.92651626 16.924359 4.88968305 
-                          17.3998004 7.66171903"
-                        />
-                      </defs>
-                      <g fill={`url(#${gradientId})`}>
-                        <use
-                          stroke="#ffa727"
-                          strokeWidth=".5"
-                          xlinkHref={`#${polygonId}`}
-                        />
-                      </g>
-                    </svg>
-                  );
-                })}
-            </Link>
-            <span>Trở lên</span>
-          </li>
-        ))}
-      </ul>
+      <RatingStars queryConfig={queryConfig} />
 
       <div className="bg-gray-300 h-[1px] my-4" />
 
