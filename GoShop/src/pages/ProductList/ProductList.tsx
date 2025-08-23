@@ -1,8 +1,8 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { omitBy, isUndefined } from "lodash";
-import AsideFilter from "./AsideFilter";
-import Product from "./Product/Product";
+import AsideFilter from "./Components/AsideFilter";
+import Product from "./Components/Product/Product";
 import type { ProductListConfig } from "../../Types/product.type";
 import productApi from "../../api/product.api";
 import SortProductList from "./SoftProductList";

@@ -1,14 +1,14 @@
 import { Link, createSearchParams, useNavigate } from "react-router-dom";
-import Button from "../../../components/Button";
-import type { QueryConfig } from "../ProductList";
-import type { Category } from "../../../Types/category.type";
-import InputNumber from "../../../components/InputNumber";
+import Button from "../../../../components/Button";
+import type { QueryConfig } from "../../ProductList";
+import type { Category } from "../../../../Types/category.type";
+import InputNumber from "../../../../components/InputNumber";
 import { useForm, Controller, type Resolver } from "react-hook-form";
 import { Watch } from "lucide-react";
 import { number } from "yup";
-import { schema, type Schema } from "../../../utils/rules";
+import { schema, type Schema } from "../../../../utils/rules";
 import { yupResolver } from "@hookform/resolvers/yup";
-import type { NoUndefinedField } from "../../../Types/util.type";
+import type { NoUndefinedField } from "../../../../Types/util.type";
 import RatingStars from "../RatingStars";
 import { omit } from "lodash";
 
