@@ -1,4 +1,12 @@
-const ProductRating = ({ rating }: { rating: number }) => {
+const ProductRating = ({
+  rating,
+  activeClassname = "w-4 h-4 text-yellow-400",
+  nonActiveClassname = "w-4 h-4 text-gray-300",
+}: {
+  rating: number;
+  activeClassname?: string;
+  nonActiveClassname?: string;
+}) => {
   const handleRating = (order: number) => {
     if (order <= rating) {
       return "100%";
@@ -22,7 +30,7 @@ const ProductRating = ({ rating }: { rating: number }) => {
               <svg
                 viewBox="0 0 24 24"
                 fill="currentColor"
-                className="w-4 h-4 text-yellow-400"
+                className={activeClassname}
               >
                 <path d="M12 .587l3.668 7.431L24 9.753l-6 5.847 1.416 8.268L12 19.771l-7.416 4.097L6 15.6 0 9.753l8.332-1.735z" />
               </svg>
@@ -34,7 +42,7 @@ const ProductRating = ({ rating }: { rating: number }) => {
               fill="none"
               stroke="currentColor"
               strokeWidth={2}
-              className="w-4 h-4 text-yellow-400"
+              className={nonActiveClassname}
             >
               <path d="M12 .587l3.668 7.431L24 9.753l-6 5.847 1.416 8.268L12 19.771l-7.416 4.097L6 15.6 0 9.753l8.332-1.735z" />
             </svg>
