@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { createSearchParams } from "react-router-dom";
 import { sortBy, order as orderConstant } from "../../../constants/product";
 import type { ProductListConfig } from "../../../Types/product.type";
@@ -11,7 +11,7 @@ interface Props {
   queryConfig: QueryConfig;
 }
 
-const SortProductList = ({ pageSize, queryConfig }: Props) => {
+const SortProductList = ({ queryConfig }: Props) => {
   const { sort_by = sortBy.createdAt, order } = queryConfig;
   const navigate = useNavigate();
   const isActiveSortBy = (

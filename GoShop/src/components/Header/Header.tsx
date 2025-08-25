@@ -76,15 +76,17 @@ const Header = () => {
       <div className="py-4">
         <div className="container mx-auto flex items-center justify-between px-4 gap-6">
           {/* logo */}
-          <div className="flex items-center space-x-3">
-            <div className="bg-white rounded-lg p-2">
-              <h1 className="text-2xl font-bold text-blue-600">Go</h1>
+          <Link to="/">
+            <div className="flex items-center space-x-3">
+              <div className="bg-white rounded-lg p-2">
+                <h1 className="text-2xl font-bold text-blue-600">Go</h1>
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-white">Shop</h1>
+                <p className="text-xs text-blue-100">Mua sắm thông minh</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-2xl font-bold text-white">Shop</h1>
-              <p className="text-xs text-blue-100">Mua sắm thông minh</p>
-            </div>
-          </div>
+          </Link>
 
           {/* search */}
 

@@ -11,7 +11,11 @@ import {
 } from "../../utils/util";
 import InputNumber from "../../components/InputNumber";
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { Product } from "../../Types/product.type";
+import type {
+  Product as productType,
+  ProductListConfig,
+} from "../../Types/product.type";
+import Product from "../ProductList/Components/Product";
 
 const ProductDetail = () => {
   const { nameId } = useParams();
@@ -33,17 +37,33 @@ const ProductDetail = () => {
     () => (product ? product.images.slice(...currentIndexImages) : []),
     [product, currentIndexImages]
   );
+
   useEffect(() => {
     if (product && product.images.length > 0) {
       setActiveImage(product.images[0]);
     }
   }, [product]);
 
+  const queryConfig: ProductListConfig = {
+    limit: "20",
+    page: "1",
+    category: product?.category._id,
+  };
+  const { data: productData } = useQuery({
+    queryKey: ["products", queryConfig],
+    queryFn: () => {
+      return productApi.getProducts(queryConfig as ProductListConfig);
+    },
+    enabled: Boolean(product),
+    staleTime: 3 * 60 * 1000,
+  });
+  console.log(productData);
+
   const chooseActive = (img: string) => {
     setActiveImage(img);
   };
   const next = () => {
-    if (currentIndexImages[1] < (product as Product)?.images.length) {
+    if (currentIndexImages[1] < (product as productType)?.images.length) {
       setCurrentIndexImages((prev) => [prev[0] + 1, prev[1] + 1]);
     }
   };
@@ -53,6 +73,8 @@ const ProductDetail = () => {
       setCurrentIndexImages((prev) => [prev[0] - 1, prev[1] - 1]);
     }
   };
+  const products = productData?.data?.data?.products ?? [];
+
   const handleZoom = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     const rect = event.currentTarget.getBoundingClientRect();
     const image = imageRef.current as HTMLImageElement;
@@ -80,7 +102,7 @@ const ProductDetail = () => {
   if (!product) return null;
   return (
     <div className="bg-gray-200 py-6">
-      <div className="container">
+      <div className="container px-4">
         <div className="bg-white p-4 shadow">
           <div className="grid grid-cols-12 gap-9">
             <div className="col-span-5">
@@ -269,18 +291,35 @@ const ProductDetail = () => {
           </div>
         </div>
       </div>
-      <div className="container">
-        <div className="mt-8 bg-white p-4 shadow">
-          <div className="rounded bg-gray-50 p-4 text-lg capitalize text-slate-700">
-            mô tả sản phẩm
+      <div className="mt-8">
+        <div className="container px-4">
+          <div className="mt-8 bg-white p-4 shadow">
+            <div className="rounded bg-gray-50 p-4 text-lg capitalize text-slate-700">
+              mô tả sản phẩm
+            </div>
+            <div className="mx-4 mt-12 mb-4 text-sm leading-loose">
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(product.description),
+                }}
+              ></div>
+            </div>
           </div>
-          <div className="mx-4 mt-12 mb-4 text-sm leading-loose">
-            <div
-              dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(product.description),
-              }}
-            ></div>
-          </div>
+        </div>
+      </div>
+
+      <div className="mt-8 ">
+        <div className="container px-4">
+          <div className="uppercase text-gray-400 ">CÓ THỂ BẠN CŨNG THÍCH</div>
+          {product && (
+            <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+              {products.map((product) => (
+                <div className="col-span-1" key={product._id}>
+                  <Product product={product} />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
