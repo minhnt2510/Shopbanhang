@@ -1,14 +1,29 @@
 import { Search, ShoppingCart, User, Menu, Heart, Bell } from "lucide-react";
 import Dropdown from "../DropDown";
-import { Link, useNavigate } from "react-router-dom";
+import { createSearchParams, Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AppContext } from "../../Context/app.context";
 import { useMutation } from "@tanstack/react-query";
 import { logout } from "../../api/auth.api";
 import Input from "../Input";
 import Button from "../Button/Button";
+import useQueryConfig from "../../hooks/useQueryConfig";
+import { useForm } from "react-hook-form";
+import { schema, type Schema } from "../../utils/rules";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { omit } from "lodash";
 
+type FormData = Pick<Schema, "name">;
+
+const nameSchema = schema.pick(["name"]);
 const Header = () => {
+  const queryConfig = useQueryConfig();
+  const { register, handleSubmit } = useForm<FormData>({
+    defaultValues: {
+      name: "",
+    },
+    resolver: yupResolver(nameSchema),
+  });
   const { setIsAuthenticated, isAuthenticated } = useContext(AppContext);
   const logoutMutation = useMutation({
     mutationFn: logout,
@@ -19,6 +34,20 @@ const Header = () => {
   const handleLogout = () => {
     logoutMutation.mutate();
   };
+  const navigate = useNavigate();
+
+  const onSubmitSearch = handleSubmit((data) => {
+    navigate({
+      pathname: "/",
+      search: createSearchParams(
+        omit({
+          ...queryConfig,
+          name: data.name,
+        })
+      ).toString(),
+    });
+  });
+
   return (
     <div className="bg-gradient-to-r from-blue-600 to-blue-500 shadow-lg">
       {/* top bar */}
@@ -58,16 +87,21 @@ const Header = () => {
           </div>
 
           {/* search */}
-          <div className="flex-1 max-w-2xl mx-6 relative">
+
+          <form
+            onSubmit={onSubmitSearch}
+            className="flex-1 max-w-2xl mx-6 relative"
+          >
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
             <Input
               placeholder="Tìm kiếm sản phẩm, thương hiệu..."
               className="pl-12 pr-20 w-full border-white bg-white shadow-sm"
+              {...register("name")}
             />
             <Button className="absolute right-0 top-1/2 -translate-y-1/2 bg-orange-500 text-white rounded-full px-4 py-1 cursor-pointer">
               Tìm
             </Button>
-          </div>
+          </form>
 
           {/* actions */}
           <div className="flex items-center space-x-2">

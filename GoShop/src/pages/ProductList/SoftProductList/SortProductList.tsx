@@ -3,8 +3,8 @@ import { useNavigate, Link } from "react-router-dom";
 import { createSearchParams } from "react-router-dom";
 import { sortBy, order as orderConstant } from "../../../constants/product";
 import type { ProductListConfig } from "../../../Types/product.type";
-import type { QueryConfig } from "../ProductList";
 import omit from "lodash/omit";
+import type { QueryConfig } from "../../../hooks/useQueryConfig";
 
 interface Props {
   pageSize: number;
@@ -14,8 +14,6 @@ interface Props {
 const SortProductList = ({ pageSize, queryConfig }: Props) => {
   const { sort_by = sortBy.createdAt, order } = queryConfig;
   const navigate = useNavigate();
-  const page = Number(queryConfig.page);
-
   const isActiveSortBy = (
     sortByValue: Exclude<ProductListConfig["sort_by"], undefined>
   ) => {

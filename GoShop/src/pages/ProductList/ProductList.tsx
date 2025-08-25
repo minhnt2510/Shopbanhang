@@ -1,40 +1,20 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { omitBy, isUndefined } from "lodash";
 import AsideFilter from "./Components/AsideFilter";
 import Product from "./Components/Product/Product";
 import type { ProductListConfig } from "../../Types/product.type";
 import productApi from "../../api/product.api";
 import SortProductList from "./SoftProductList";
 import Paginate from "../../components/Paginate";
-import useQueryParam from "../../hooks/useQueryParam";
 import categoryApi from "../../api/category.api";
-
-export type QueryConfig = {
-  [key in keyof ProductListConfig]?: string;
-};
+import useQueryConfig from "../../hooks/useQueryConfig";
 
 export default function ProductList() {
   // lấy query từ url
-  const queryParams: QueryConfig = useQueryParam();
   const [page, setPage] = useState(1);
 
   // config query để truyền vào API
-  const queryConfig: QueryConfig = omitBy(
-    {
-      page: queryParams.page || String(page), // fallback sang state page
-      limit: queryParams.limit || "10",
-      sort_by: queryParams.sort_by,
-      exclude: queryParams.exclude,
-      name: queryParams.name,
-      order: queryParams.order,
-      price_max: queryParams.price_max,
-      price_min: queryParams.price_min,
-      rating_filter: queryParams.rating_filter,
-      category: queryParams.category,
-    },
-    isUndefined
-  );
+  const queryConfig = useQueryConfig();
 
   // gọi API với react-query
   const { data: productData } = useQuery({
