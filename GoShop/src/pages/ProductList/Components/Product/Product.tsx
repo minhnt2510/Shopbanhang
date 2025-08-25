@@ -3,6 +3,7 @@ import type { Product as ProductType } from "../../../../Types/product.type";
 import {
   formatCurrency,
   formatNumberToSocialStyle,
+  generateNameId,
 } from "../../../../utils/util";
 import ProductRating from "../../../../components/ProductRating";
 import path from "../../../../constants/path";
@@ -12,7 +13,12 @@ interface Props {
 }
 const Product = ({ product }: Props) => {
   return (
-    <Link to={`${path.home} ${product._id}`}>
+    <Link
+      to={`${path.home}${generateNameId({
+        name: product.name,
+        id: product._id,
+      })}`}
+    >
       <div className="bg-white rounded-sm shadow hover:translate-y-[-0.0625rem] hover:shadow-md duration-100 transition-transform overflow-hidden ">
         <div className="w-full pt-[100%] relative ">
           <img

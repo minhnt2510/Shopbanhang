@@ -10,6 +10,7 @@ import Profile from "./pages/Profile";
 import RegisterLayout from "./layouts/RegisterLayout";
 import MainLayout from "./layouts/MainLayout";
 import ProductDetail from "./pages/ProductDetail";
+import path from "./constants/path";
 
 // Route yêu cầu đăng nhập
 const ProtectedRoute = () => {
@@ -59,7 +60,7 @@ const useRouteElement = () => {
           ),
         },
         {
-          path: "/:id",
+          path: path.productDetail,
           element: (
             <MainLayout>
               <ProductDetail />

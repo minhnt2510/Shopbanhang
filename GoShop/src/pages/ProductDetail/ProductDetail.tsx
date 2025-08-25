@@ -6,6 +6,7 @@ import DOMPurify from "dompurify";
 import {
   formatCurrency,
   formatNumberToSocialStyle,
+  getIdFromNameId,
   rateSale,
 } from "../../utils/util";
 import InputNumber from "../../components/InputNumber";
@@ -13,7 +14,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { Product } from "../../Types/product.type";
 
 const ProductDetail = () => {
-  const { id } = useParams();
+  const { nameId } = useParams();
+  if (!nameId) {
+    console.log("loi roif");
+  }
+  const id = getIdFromNameId(nameId as string);
   const { data: ProductDetailData } = useQuery({
     queryKey: ["product", id],
     queryFn: () => productApi.getProductDetail(id as string),

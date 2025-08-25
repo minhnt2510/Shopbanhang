@@ -1,5 +1,5 @@
 const path = {
-  productDetail: ":id",
+  productDetail: ":nameId",
   home: "/",
   login: "login",
   register: "/register",
