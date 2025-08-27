@@ -8,7 +8,7 @@ const purchaseApi = {
     return http.post<ResponseAPI<Purchase>>(`${URL}/add-to-cart`, body);
   },
   getPurchases(params: { status: PurchaseListStatus }) {
-    return http.get<ResponseAPI<Purchase>>(`${URL}`, {
+    return http.get<ResponseAPI<Purchase[]>>(`${URL}`, {
       params,
     });
   },

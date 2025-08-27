@@ -35,7 +35,7 @@ export default function ProductList() {
 
   return (
     <div className="bg-gray-200 py-6">
-      <div className="container">
+      <div className="container mx-auto">
         <div className="grid grid-cols-12 gap-6">
           {/* AsideFilter */}
           <div className="col-span-3 ">

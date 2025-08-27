@@ -3,7 +3,7 @@ import Dropdown from "../DropDown";
 import { createSearchParams, Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AppContext } from "../../Context/app.context";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { logout } from "../../api/auth.api";
 import Input from "../Input";
 import Button from "../Button/Button";
@@ -12,6 +12,9 @@ import { useForm } from "react-hook-form";
 import { schema, type Schema } from "../../utils/rules";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { omit } from "lodash";
+import { purchasStatus } from "../../constants/purchase";
+import purchaseApi from "../../api/puchase.api";
+import { formatCurrency } from "../../utils/util";
 
 type FormData = Pick<Schema, "name">;
 
@@ -47,6 +50,14 @@ const Header = () => {
       ).toString(),
     });
   });
+  // khi chuyen trang thi header chi bi re-render chu kh bi unmount
+  const { data: purchasesInCartData } = useQuery({
+    queryKey: ["purchases", { status: purchasStatus.inCart }],
+    queryFn: () => purchaseApi.getPurchases({ status: purchasStatus.inCart }),
+  });
+  console.log("header");
+
+  const purchasesInCart = purchasesInCartData?.data.data;
 
   return (
     <div className="bg-gradient-to-r from-blue-600 to-blue-500 shadow-lg">
@@ -126,26 +137,64 @@ const Header = () => {
               trigger={
                 <Button className="relative bg-transparent text-white hover:bg-blue-600">
                   <ShoppingCart className="w-5 h-5" />
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                    3
-                  </span>
+                  {purchasesInCart && purchasesInCart.length > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                      {purchasesInCart.length}
+                    </span>
+                  )}
                 </Button>
               }
             >
-              <h3 className="font-semibold mb-3">Giỏ hàng của bạn</h3>
-              <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 bg-gray-200 rounded"></div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">iPhone 15 Pro</p>
-                  <p className="text-xs text-gray-500">1 x 25,000,000đ</p>
-                </div>
-              </div>
-              <div className="border-t my-3" />
-              <div className="flex justify-between items-center">
-                <span className="font-semibold">Tổng: 75,000,000đ</span>
-                <Button className="bg-blue-600 text-white rounded">
-                  Thanh toán
-                </Button>
+              <div className="w-80 p-4">
+                {purchasesInCart && purchasesInCart.length > 0 ? (
+                  <>
+                    <h3 className="font-semibold mb-3 text-lg">
+                      Giỏ hàng của bạn
+                    </h3>
+
+                    <div className="space-y-3 max-h-64 overflow-y-auto pr-1">
+                      {purchasesInCart.slice(0, 5).map((purchase) => (
+                        <div
+                          key={purchase._id}
+                          className="flex items-center space-x-3 border-b pb-2 last:border-0"
+                        >
+                          {/* Ảnh sản phẩm */}
+                          <div className="w-14 h-14 flex-shrink-0">
+                            <img
+                              src={purchase.product.image}
+                              alt={purchase.product.name}
+                              className="w-full h-full object-cover rounded-md"
+                            />
+                          </div>
+
+                          {/* Thông tin */}
+                          <div className="flex-1 overflow-hidden">
+                            <p className="text-sm font-medium truncate">
+                              {purchase.product.name}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {purchase.buy_count} x{" "}
+                              {formatCurrency(purchase.price)}đ
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    {/* Nút hành động */}
+                    <div className="flex gap-2">
+                      <Button className="flex-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
+                        Xem giỏ hàng
+                      </Button>
+                      <Button className="flex-1 bg-blue-600 text-white rounded hover:bg-blue-700">
+                        Thanh toán
+                      </Button>
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-center text-gray-500 py-6">
+                    Giỏ hàng trống
+                  </div>
+                )}
               </div>
             </Dropdown>
 

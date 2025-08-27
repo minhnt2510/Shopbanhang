@@ -28,7 +28,7 @@ export function Dropdown({
   // hover thay vì click
   const hover = useHover(context, {
     move: false,
-    handleClose: safePolygon(), 
+    handleClose: safePolygon(),
   });
   const dismiss = useDismiss(context);
   const role = useRole(context);
@@ -49,7 +49,7 @@ export function Dropdown({
           ref={refs.setFloating}
           style={floatingStyles}
           {...getFloatingProps()}
-          className="bg-white rounded shadow-lg p-3 w-64 z-50 transition-opacity duration-200"
+          className="bg-white rounded shadow-lg p-3 w-90 z-50 transition-opacity duration-200"
         >
           {children}
         </div>

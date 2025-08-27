@@ -49,6 +49,14 @@ const useRouteElement = () => {
       ],
     },
     {
+      path: path.productDetail,
+      element: (
+        <MainLayout>
+          <ProductDetail />
+        </MainLayout>
+      ),
+    },
+    {
       element: <RejectedRoute />,
       children: [
         {
@@ -59,14 +67,7 @@ const useRouteElement = () => {
             </RegisterLayout>
           ),
         },
-        {
-          path: path.productDetail,
-          element: (
-            <MainLayout>
-              <ProductDetail />
-            </MainLayout>
-          ),
-        },
+
         {
           path: "register",
           element: (

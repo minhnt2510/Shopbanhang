@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import productApi from "../../api/product.api";
 import ProductRating from "../../components/ProductRating";
@@ -9,7 +9,6 @@ import {
   getIdFromNameId,
   rateSale,
 } from "../../utils/util";
-import InputNumber from "../../components/InputNumber";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type {
   Product as productType,
@@ -17,6 +16,9 @@ import type {
 } from "../../Types/product.type";
 import Product from "../ProductList/Components/Product";
 import QuantityController from "../../components/QuantityController";
+import purchaseApi from "../../api/puchase.api";
+import { queryClient } from "../../main";
+import { purchasStatus } from "../../constants/purchase";
 
 const ProductDetail = () => {
   const { nameId } = useParams();
@@ -65,6 +67,13 @@ const ProductDetail = () => {
   const chooseActive = (img: string) => {
     setActiveImage(img);
   };
+
+  const addToCartMutation = useMutation({
+    mutationFn: (body: { product_id: string; buy_count: number }) => {
+      return purchaseApi.addToCart(body);
+    },
+  });
+
   const next = () => {
     if (currentIndexImages[1] < (product as productType)?.images.length) {
       setCurrentIndexImages((prev) => [prev[0] + 1, prev[1] + 1]);
@@ -106,10 +115,26 @@ const ProductDetail = () => {
     setBuyCount(value);
   };
 
+  const addTocart = () => {
+    addToCartMutation.mutate(
+      {
+        buy_count: buyCount,
+        product_id: product?._id as string,
+      },
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: ["purchases", { status: purchasStatus.inCart }],
+          });
+        },
+      }
+    );
+  };
+
   if (!product) return null;
   return (
     <div className="bg-gray-200 py-6">
-      <div className="container px-4">
+      <div className="container mx-auto">
         <div className="bg-white p-4 shadow">
           <div className="grid grid-cols-12 gap-9">
             <div className="col-span-5">
@@ -236,6 +261,7 @@ const ProductDetail = () => {
               </div>
               <div className="mt-8 flex items-center ">
                 <button
+                  onClick={addTocart}
                   className="flex h-12 items-center justify-center rounded-sm border
                 border-orange-500 bg-orange-500/10 px-5 capitalize text-orange-500 shadow-sm hover:bg-orange-100
                 cursor-pointer"
@@ -268,7 +294,7 @@ const ProductDetail = () => {
         </div>
       </div>
       <div className="mt-8">
-        <div className="container px-4">
+        <div className="container mx-auto">
           <div className="mt-8 bg-white p-4 shadow">
             <div className="rounded bg-gray-50 p-4 text-lg capitalize text-slate-700">
               mô tả sản phẩm
@@ -285,7 +311,7 @@ const ProductDetail = () => {
       </div>
 
       <div className="mt-8 ">
-        <div className="container px-4">
+        <div className="container mx-auto">
           <div className="uppercase text-gray-400 ">CÓ THỂ BẠN CŨNG THÍCH</div>
           {product && (
             <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
