@@ -1,5 +1,4 @@
 import { Search, ShoppingCart, User, Menu, Heart, Bell } from "lucide-react";
-import Dropdown from "../DropDown";
 import { createSearchParams, Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AppContext } from "../../Context/app.context";
@@ -15,6 +14,7 @@ import { omit } from "lodash";
 import { purchasStatus } from "../../constants/purchase";
 import purchaseApi from "../../api/puchase.api";
 import { formatCurrency } from "../../utils/util";
+import Popover from "../Popover/Popover";
 
 type FormData = Pick<Schema, "name">;
 
@@ -142,101 +142,103 @@ const Header = () => {
             </Button>
 
             {/* giỏ hàng */}
-            <Dropdown
-              trigger={
-                <Button className="relative bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 border border-white/20 rounded-xl p-3 transition-all duration-300 hover:scale-110 hover:shadow-lg">
-                  <ShoppingCart className="w-5 h-5" />
-                  {purchasesInCart && purchasesInCart.length > 0 && (
-                    <span className="absolute -top-2 -right-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold shadow-lg">
-                      {purchasesInCart.length}
-                    </span>
+            <Popover
+              renderPopover={
+                <div className="w-96 p-6 bg-white rounded-2xl shadow-2xl border border-slate-200">
+                  {purchasesInCart && purchasesInCart.length > 0 ? (
+                    <>
+                      <h3 className="font-bold mb-4 text-xl text-slate-800 border-b border-slate-100 pb-3">
+                        Giỏ hàng của bạn
+                      </h3>
+
+                      <div className="space-y-4 max-h-80 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-slate-300">
+                        {purchasesInCart.slice(0, 5).map((purchase) => (
+                          <div
+                            key={purchase._id}
+                            className="flex items-center space-x-4 p-3 rounded-xl hover:bg-slate-50 transition-colors duration-200"
+                          >
+                            {/* Ảnh sản phẩm */}
+                            <div className="w-16 h-16 flex-shrink-0">
+                              <img
+                                src={
+                                  purchase.product.image || "/placeholder.svg"
+                                }
+                                alt={purchase.product.name}
+                                className="w-full h-full object-cover rounded-xl shadow-md"
+                              />
+                            </div>
+
+                            {/* Thông tin */}
+                            <div className="flex-1 overflow-hidden">
+                              <p className="text-sm font-semibold text-slate-800 truncate mb-1">
+                                {purchase.product.name}
+                              </p>
+                              <p className="text-sm text-slate-500 font-medium">
+                                {purchase.buy_count} x{" "}
+                                <span className="text-blue-600 font-bold">
+                                  {formatCurrency(purchase.price)}đ
+                                </span>
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      {/* Nút hành động */}
+                      <div className="flex gap-3 mt-6 pt-4 border-t border-slate-100">
+                        <Button className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl py-3 font-semibold transition-all duration-300 hover:scale-105">
+                          Xem giỏ hàng
+                        </Button>
+                        <Button className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl py-3 font-semibold shadow-lg hover:shadow-blue-500/25 transition-all duration-300 hover:scale-105">
+                          Thanh toán
+                        </Button>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="text-center text-slate-500 py-12">
+                      <ShoppingCart className="w-16 h-16 mx-auto mb-4 text-slate-300" />
+                      <p className="text-lg font-medium">Giỏ hàng trống</p>
+                    </div>
                   )}
-                </Button>
+                </div>
               }
             >
-              <div className="w-96 p-6 bg-white rounded-2xl shadow-2xl border border-slate-200">
-                {purchasesInCart && purchasesInCart.length > 0 ? (
-                  <>
-                    <h3 className="font-bold mb-4 text-xl text-slate-800 border-b border-slate-100 pb-3">
-                      Giỏ hàng của bạn
-                    </h3>
-
-                    <div className="space-y-4 max-h-80 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-slate-300">
-                      {purchasesInCart.slice(0, 5).map((purchase) => (
-                        <div
-                          key={purchase._id}
-                          className="flex items-center space-x-4 p-3 rounded-xl hover:bg-slate-50 transition-colors duration-200"
-                        >
-                          {/* Ảnh sản phẩm */}
-                          <div className="w-16 h-16 flex-shrink-0">
-                            <img
-                              src={purchase.product.image || "/placeholder.svg"}
-                              alt={purchase.product.name}
-                              className="w-full h-full object-cover rounded-xl shadow-md"
-                            />
-                          </div>
-
-                          {/* Thông tin */}
-                          <div className="flex-1 overflow-hidden">
-                            <p className="text-sm font-semibold text-slate-800 truncate mb-1">
-                              {purchase.product.name}
-                            </p>
-                            <p className="text-sm text-slate-500 font-medium">
-                              {purchase.buy_count} x{" "}
-                              <span className="text-blue-600 font-bold">
-                                {formatCurrency(purchase.price)}đ
-                              </span>
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    {/* Nút hành động */}
-                    <div className="flex gap-3 mt-6 pt-4 border-t border-slate-100">
-                      <Button className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl py-3 font-semibold transition-all duration-300 hover:scale-105">
-                        Xem giỏ hàng
-                      </Button>
-                      <Button className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl py-3 font-semibold shadow-lg hover:shadow-blue-500/25 transition-all duration-300 hover:scale-105">
-                        Thanh toán
-                      </Button>
-                    </div>
-                  </>
-                ) : (
-                  <div className="text-center text-slate-500 py-12">
-                    <ShoppingCart className="w-16 h-16 mx-auto mb-4 text-slate-300" />
-                    <p className="text-lg font-medium">Giỏ hàng trống</p>
-                  </div>
+              <Button className="relative bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 border border-white/20 rounded-xl p-3 transition-all duration-300 hover:scale-110 hover:shadow-lg">
+                <ShoppingCart className="w-5 h-5" />
+                {purchasesInCart && purchasesInCart.length > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold shadow-lg">
+                    {purchasesInCart.length}
+                  </span>
                 )}
-              </div>
-            </Dropdown>
+              </Button>
+            </Popover>
 
             {/* user menu */}
             {isAuthenticated && (
-              <Dropdown
-                trigger={
-                  <Button className="bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 border border-white/20 rounded-xl p-3 transition-all duration-300 hover:scale-110 hover:shadow-lg">
-                    <User className="w-5 h-5" />
-                  </Button>
+              <Popover
+                renderPopover={
+                  <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
+                    <button className="block w-full text-left px-6 py-4 hover:bg-slate-50 transition-colors duration-200 font-medium text-slate-700 border-b border-slate-100">
+                      Tài khoản của tôi
+                    </button>
+                    <button className="block w-full text-left px-6 py-4 hover:bg-slate-50 transition-colors duration-200 font-medium text-slate-700 border-b border-slate-100">
+                      Đơn hàng
+                    </button>
+                    <button className="block w-full text-left px-6 py-4 hover:bg-slate-50 transition-colors duration-200 font-medium text-slate-700 border-b border-slate-100">
+                      Yêu thích
+                    </button>
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full text-left px-6 py-4 hover:bg-red-50 transition-colors duration-200 font-medium text-red-600"
+                    >
+                      Đăng xuất
+                    </button>
+                  </div>
                 }
               >
-                <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
-                  <button className="block w-full text-left px-6 py-4 hover:bg-slate-50 transition-colors duration-200 font-medium text-slate-700 border-b border-slate-100">
-                    Tài khoản của tôi
-                  </button>
-                  <button className="block w-full text-left px-6 py-4 hover:bg-slate-50 transition-colors duration-200 font-medium text-slate-700 border-b border-slate-100">
-                    Đơn hàng
-                  </button>
-                  <button className="block w-full text-left px-6 py-4 hover:bg-slate-50 transition-colors duration-200 font-medium text-slate-700 border-b border-slate-100">
-                    Yêu thích
-                  </button>
-                  <button
-                    onClick={handleLogout}
-                    className="block w-full text-left px-6 py-4 hover:bg-red-50 transition-colors duration-200 font-medium text-red-600"
-                  >
-                    Đăng xuất
-                  </button>
-                </div>
-              </Dropdown>
+                <Button className="bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 border border-white/20 rounded-xl p-3 transition-all duration-300 hover:scale-110 hover:shadow-lg">
+                  <User className="w-5 h-5" />
+                </Button>
+              </Popover>
             )}
           </div>
         </div>
