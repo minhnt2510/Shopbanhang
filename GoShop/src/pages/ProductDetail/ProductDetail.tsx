@@ -18,7 +18,8 @@ import Product from "../ProductList/Components/Product";
 import QuantityController from "../../components/QuantityController";
 import purchaseApi from "../../api/puchase.api";
 import { queryClient } from "../../main";
-import { purchasStatus } from "../../constants/purchase";
+import { toast } from "react-toastify";
+import { purchasesStatus } from "../../constants/purchase";
 
 const ProductDetail = () => {
   const { nameId } = useParams();
@@ -122,9 +123,10 @@ const ProductDetail = () => {
         product_id: product?._id as string,
       },
       {
-        onSuccess: () => {
+        onSuccess: (data) => {
+          toast.success(data.data.message);
           queryClient.invalidateQueries({
-            queryKey: ["purchases", { status: purchasStatus.inCart }],
+            queryKey: ["purchases", { status: purchasesStatus.inCart }],
           });
         },
       }
