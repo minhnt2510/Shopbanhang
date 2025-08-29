@@ -5,6 +5,7 @@ const path = {
   register: "/register",
   logout: "/logout",
   profile: "/profile",
+  cart : "/cart"
 } as const;
 
 export default path;

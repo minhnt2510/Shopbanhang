@@ -15,6 +15,8 @@ import purchaseApi from "../../api/puchase.api";
 import { formatCurrency } from "../../utils/util";
 import Popover from "../Popover/Popover";
 import { purchasesStatus } from "../../constants/purchase";
+import { queryClient } from "../../main";
+import path from "../../constants/path";
 
 type FormData = Pick<Schema, "name">;
 
@@ -35,6 +37,9 @@ const Header = () => {
     mutationFn: logout,
     onSuccess: () => {
       setIsAuthenticated(false);
+      queryClient.removeQueries({
+        queryKey: ["purchases", { status: purchasesStatus.inCart }],
+      });
     },
   });
   const handleLogout = () => {
@@ -57,8 +62,8 @@ const Header = () => {
   const { data: purchasesInCartData } = useQuery({
     queryKey: ["purchases", { status: purchasesStatus.inCart }],
     queryFn: () => purchaseApi.getPurchases({ status: purchasesStatus.inCart }),
+    enabled: isAuthenticated,
   });
-  console.log("header");
 
   const purchasesInCart = purchasesInCartData?.data.data;
 
@@ -187,10 +192,13 @@ const Header = () => {
                           ))}
                       </div>
                       {/* Nút hành động */}
-                      <div className="flex gap-3 mt-6 pt-4 border-t border-slate-100">
-                        <Button className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl py-3 font-semibold transition-all duration-300 hover:scale-105">
+                      <div className="flex items-center text-center gap-3 mt-6 pt-4 border-t border-slate-100">
+                        <Link
+                          to={path.cart}
+                          className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl py-3 font-semibold transition-all duration-300 hover:scale-105"
+                        >
                           Xem giỏ hàng
-                        </Button>
+                        </Link>
                         <div className="flex-1 items-center text-center cursor-pointer bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl py-3 font-semibold shadow-lg hover:shadow-blue-500/25 transition-all duration-300 hover:scale-105">
                           {purchasesInCart.length > MAX_PURCHASE
                             ? purchasesInCart.length - MAX_PURCHASE

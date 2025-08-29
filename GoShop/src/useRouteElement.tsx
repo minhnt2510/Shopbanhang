@@ -11,6 +11,7 @@ import RegisterLayout from "./layouts/RegisterLayout";
 import MainLayout from "./layouts/MainLayout";
 import ProductDetail from "./pages/ProductDetail";
 import path from "./constants/path";
+import Cart from "./pages/Cart";
 
 // Route yêu cầu đăng nhập
 const ProtectedRoute = () => {
@@ -43,6 +44,14 @@ const useRouteElement = () => {
           element: (
             <MainLayout>
               <Profile />
+            </MainLayout>
+          ),
+        },
+        {
+          path: path.cart,
+          element: (
+            <MainLayout>
+              <Cart />
             </MainLayout>
           ),
         },

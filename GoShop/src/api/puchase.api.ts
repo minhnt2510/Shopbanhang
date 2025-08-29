@@ -12,6 +12,17 @@ const purchaseApi = {
       params,
     });
   },
+  buyProducts(body: { product_id: string; buy_count: number }[]) {
+    return http.post<ResponseAPI<Purchase>>(`${URL}/buy-products`, body);
+  },
+  updatePurchase(body: { product_id: string; buy_count: number }) {
+    return http.put<ResponseAPI<Purchase>>(`${URL}/update-purchase`, body);
+  },
+  deletePurchase(purchaseIds: string[]) {
+    return http.delete<ResponseAPI<{ deleted_count: number }>>(`${URL}`, {
+      data: purchaseIds,
+    });
+  },
 };
 
 export default purchaseApi;
