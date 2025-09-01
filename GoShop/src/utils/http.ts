@@ -1,10 +1,6 @@
-import axios, { AxiosError, type AxiosInstance } from "axios";
+import axios, { AxiosError, HttpStatusCode, type AxiosInstance } from "axios";
 import { toast } from "react-toastify";
-import {
-  clearAccessTokenFromLS,
-  getAccessTokenFromLS,
-  saveAccesTokenToLS,
-} from "./auth";
+import { clearLS, getAccessTokenFromLS, saveAccesTokenToLS } from "./auth";
 import type { AuthResponse } from "../Types/auth.type";
 
 class Http {
@@ -43,7 +39,7 @@ class Http {
           saveAccesTokenToLS(this.accessToken);
         } else if (url === "/logout") {
           this.accessToken = "";
-          clearAccessTokenFromLS();
+          clearLS();
         }
         return response;
       },
@@ -54,6 +50,9 @@ class Http {
           const data: any | undefined = error.response?.data;
           const message = data?.message || error.message;
           toast.error(message);
+        }
+        if (error.response?.status === HttpStatusCode.Unauthorized) {
+          clearLS();
         }
         return Promise.reject(error);
       }

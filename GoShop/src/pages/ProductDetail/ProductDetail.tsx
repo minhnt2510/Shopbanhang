@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import productApi from "../../api/product.api";
 import ProductRating from "../../components/ProductRating";
@@ -17,16 +17,13 @@ import type {
 import Product from "../ProductList/Components/Product";
 import QuantityController from "../../components/QuantityController";
 import purchaseApi from "../../api/puchase.api";
-import { queryClient } from "../../main";
 import { toast } from "react-toastify";
 import { purchasesStatus } from "../../constants/purchase";
 import path from "../../constants/path";
 
 const ProductDetail = () => {
+  const queryClient = useQueryClient();
   const { nameId } = useParams();
-  if (!nameId) {
-    console.log("loi roif");
-  }
   const id = getIdFromNameId(nameId as string);
   const { data: ProductDetailData } = useQuery({
     queryKey: ["product", id],

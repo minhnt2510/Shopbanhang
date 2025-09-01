@@ -2,7 +2,7 @@ import { Search, ShoppingCart, User, Menu, Heart, Bell } from "lucide-react";
 import { createSearchParams, Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AppContext } from "../../Context/app.context";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { logout } from "../../api/auth.api";
 import Input from "../Input";
 import Button from "../Button/Button";
@@ -15,7 +15,6 @@ import purchaseApi from "../../api/puchase.api";
 import { formatCurrency } from "../../utils/util";
 import Popover from "../Popover/Popover";
 import { purchasesStatus } from "../../constants/purchase";
-import { queryClient } from "../../main";
 import path from "../../constants/path";
 
 type FormData = Pick<Schema, "name">;
@@ -25,6 +24,8 @@ const nameSchema = schema.pick(["name"]);
 const MAX_PURCHASE = 5;
 
 const Header = () => {
+  const queryClient = useQueryClient();
+
   const queryConfig = useQueryConfig();
   const { register, handleSubmit } = useForm<FormData>({
     defaultValues: {
