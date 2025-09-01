@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { purchasesStatus } from "../../constants/purchase";
 import purchaseApi from "../../api/puchase.api";
 import QuantityController from "../../components/QuantityController";
@@ -7,21 +7,13 @@ import Button from "../../components/Button";
 import path from "../../constants/path";
 import { formatCurrency, generateNameId } from "../../utils/util";
 import type { Purchase } from "../../Types/purchase.type";
-import { useEffect, useState } from "react";
-import { current, produce } from "immer";
+import { useContext, useEffect } from "react";
+import { produce } from "immer";
 import { keyBy } from "lodash";
-import type { number } from "yup";
-
-interface ExtendedPurchase extends Purchase {
-  disabled: boolean;
-  checked: boolean;
-}
+import { AppContext } from "../../Context/app.context";
 
 export default function Cart() {
-  const [extendedPurchases, setExtendedPurchases] = useState<
-    ExtendedPurchase[]
-  >([]);
-
+  const { extendedPurchases, setExtendedPurchases } = useContext(AppContext);
   const { data: purchasesInCartData, refetch } = useQuery({
     queryKey: ["purchases", { status: purchasesStatus.inCart }],
     queryFn: () => purchaseApi.getPurchases({ status: purchasesStatus.inCart }),
@@ -33,7 +25,6 @@ export default function Cart() {
       refetch();
     },
   });
-
   const buyProductMutation = useMutation({
     mutationFn: purchaseApi.buyProducts,
     onSuccess: () => {
@@ -53,19 +44,35 @@ export default function Cart() {
   const checkedPurchases = extendedPurchases.filter(
     (purchase) => purchase.checked
   );
+  const location = useLocation();
+  const choosenPurchaseIdFromLocation = (
+    location.state as { purchaseId: string } | null
+  )?.purchaseId;
 
   useEffect(() => {
     setExtendedPurchases((prev) => {
       const extendedPurchasesObject = keyBy(prev, "_id");
       return (
-        purchasesInCart?.map((purchase) => ({
-          ...purchase,
-          disabled: false,
-          checked: Boolean(extendedPurchasesObject[purchase._id]?.checked),
-        })) || []
+        purchasesInCart?.map((purchase) => {
+          const isChoosenPurchaseIdFromLocation =
+            choosenPurchaseIdFromLocation === purchase._id;
+          return {
+            ...purchase,
+            disabled: false,
+            checked:
+              isChoosenPurchaseIdFromLocation ||
+              Boolean(extendedPurchasesObject[purchase._id]?.checked),
+          };
+        }) || []
       );
     });
-  }, [purchasesInCart]);
+  }, [purchasesInCart, choosenPurchaseIdFromLocation]);
+
+  useEffect(() => {
+    return () => {
+      history.replaceState(null, "");
+    };
+  }, []);
 
   const handleCheck =
     (purchaseIndex: number) => (event: React.ChangeEvent<HTMLInputElement>) => {

@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import productApi from "../../api/product.api";
 import ProductRating from "../../components/ProductRating";
 import DOMPurify from "dompurify";
@@ -20,6 +20,7 @@ import purchaseApi from "../../api/puchase.api";
 import { queryClient } from "../../main";
 import { toast } from "react-toastify";
 import { purchasesStatus } from "../../constants/purchase";
+import path from "../../constants/path";
 
 const ProductDetail = () => {
   const { nameId } = useParams();
@@ -43,6 +44,8 @@ const ProductDetail = () => {
   );
 
   const [buyCount, setBuyCount] = useState(1);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (product && product.images.length > 0) {
@@ -131,6 +134,19 @@ const ProductDetail = () => {
         },
       }
     );
+  };
+
+  const buyNow = async () => {
+    const res = await addToCartMutation.mutateAsync({
+      buy_count: buyCount,
+      product_id: product?._id as string,
+    });
+    const purchase = res.data.data;
+    navigate(path.cart, {
+      state: {
+        purchaseId: purchase?._id,
+      },
+    });
   };
 
   if (!product) return null;
@@ -285,6 +301,7 @@ const ProductDetail = () => {
                   Thêm vào giỏ hàng
                 </button>
                 <button
+                  onClick={buyNow}
                   className="flex items-center justify-center rounded-sm px-5 h-12 ml-6 bg-orange-600 text-white cursor-pointer
                 "
                 >
