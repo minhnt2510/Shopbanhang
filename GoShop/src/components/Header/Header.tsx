@@ -238,9 +238,12 @@ const Header = () => {
                 <Popover
                   renderPopover={
                     <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
-                      <button className="block w-full text-left px-6 py-4 hover:bg-slate-50 transition-colors duration-200 font-medium text-slate-700 border-b border-slate-100">
-                        Tài khoản của tôi
-                      </button>
+                      <Link to={path.profile}>
+                        <button className="block w-full text-left px-6 py-4 hover:bg-slate-50 transition-colors duration-200 font-medium text-slate-700 border-b border-slate-100">
+                          Tài khoản của tôi
+                        </button>
+                      </Link>
+
                       <button className="block w-full text-left px-6 py-4 hover:bg-slate-50 transition-colors duration-200 font-medium text-slate-700 border-b border-slate-100">
                         Đơn hàng
                       </button>

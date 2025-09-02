@@ -12,6 +12,9 @@ import MainLayout from "./layouts/MainLayout";
 import ProductDetail from "./pages/ProductDetail";
 import path from "./constants/path";
 import Cart from "./pages/Cart";
+import UserLayout from "./pages/User/Layout/UserLayout";
+import HistoryPurchase from "./pages/User/Pages/HistoryPurchase";
+import ChangePassword from "./pages/User/Pages/ChangePassword";
 
 // Route yêu cầu đăng nhập
 const ProtectedRoute = () => {
@@ -40,20 +43,34 @@ const useRouteElement = () => {
       element: <ProtectedRoute />,
       children: [
         {
-          path: "profile",
-          element: (
-            <MainLayout>
-              <Profile />
-            </MainLayout>
-          ),
-        },
-        {
           path: path.cart,
           element: (
             <MainLayout>
               <Cart />
             </MainLayout>
           ),
+        },
+        {
+          path: path.user,
+          element: (
+            <MainLayout>
+              <UserLayout />
+            </MainLayout>
+          ),
+          children: [
+            {
+              path: path.profile,
+              element: <Profile />,
+            },
+            {
+              path: path.historyPurchase,
+              element: <HistoryPurchase />,
+            },
+            {
+              path: path.changePassword,
+              element: <ChangePassword />,
+            },
+          ],
         },
       ],
     },
@@ -69,7 +86,7 @@ const useRouteElement = () => {
       element: <RejectedRoute />,
       children: [
         {
-          path: "login",
+          path: path.login,
           element: (
             <RegisterLayout>
               <Login />
@@ -78,7 +95,7 @@ const useRouteElement = () => {
         },
 
         {
-          path: "register",
+          path: path.register,
           element: (
             <RegisterLayout>
               <Register />
