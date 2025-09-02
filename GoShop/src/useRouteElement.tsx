@@ -5,7 +5,6 @@ import { AppContext } from "./Context/app.context";
 import ProductList from "./pages/ProductList";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Profile from "./pages/Profile";
 
 import RegisterLayout from "./layouts/RegisterLayout";
 import MainLayout from "./layouts/MainLayout";
@@ -15,6 +14,7 @@ import Cart from "./pages/Cart";
 import UserLayout from "./pages/User/Layout/UserLayout";
 import HistoryPurchase from "./pages/User/Pages/HistoryPurchase";
 import ChangePassword from "./pages/User/Pages/ChangePassword";
+import Profile from "./pages/User/Pages/Profile";
 
 // Route yêu cầu đăng nhập
 const ProtectedRoute = () => {
