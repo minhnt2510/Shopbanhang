@@ -70,7 +70,7 @@ const Profile = () => {
               <img
                 src="https://cf.shopee.vn/file/d04ea22afab6e6d250a370d7ccc2e675_tn"
                 alt=""
-                className="w-full w-full rounded-full object-cover"
+                className="w-full h-full rounded-full object-cover"
               />
             </div>
             <input className="hidden" type="file" accept=".jpg,.jpeg,.png" />
