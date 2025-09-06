@@ -1,6 +1,65 @@
+import { useQuery } from "@tanstack/react-query";
+import Button from "../../../../components/Button";
 import Input from "../../../../components/Input";
+import userApi from "../../../../api/user.api";
+import { userSchema, type UserSchema } from "../../../../utils/rules";
+import { Controller, useForm, type Resolver } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import InputNumber from "../../../../components/InputNumber";
+import { useEffect } from "react";
+
+type FormData = Pick<
+  UserSchema,
+  "name" | "address" | "phone" | "date_of_birth" | "avatar"
+>;
+const profileSchema = userSchema.pick([
+  "name",
+  "address",
+  "phone",
+  "date_of_birth",
+  "avatar",
+]);
 
 const Profile = () => {
+  const {
+    register,
+    control,
+    watch,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+    setError,
+  } = useForm<FormData>({
+    defaultValues: {
+      name: "",
+      phone: "",
+      address: "",
+      avatar: "",
+      date_of_birth: new Date(1990, 0, 1),
+    },
+    resolver: yupResolver(profileSchema) as Resolver<FormData>,
+  });
+
+  const { data: profileData } = useQuery({
+    queryKey: ["profile"],
+    queryFn: userApi.getProfile,
+  });
+  const profile = profileData?.data.data;
+  console.log(profile);
+
+  useEffect(() => {
+    if (profile) {
+      setValue("name", profile.name);
+      setValue("address", profile.address);
+      setValue("phone", profile.phone);
+      setValue("avatar", profile.avatar);
+      setValue(
+        "date_of_birth",
+        profile.date_of_birth ? new Date(profile.date_of_birth) : new Date()
+      );
+    }
+  }, [profile, setValue]);
+
   return (
     <div className="rounded-sm bg-white px-2 pb-10 shadow md:px-7 md:pb-20">
       <div className="border-b border-b-gray-200 py-6">
@@ -11,14 +70,14 @@ const Profile = () => {
           Quản lý thông tin hồ sơ để bảo mật tài khoản
         </div>
       </div>
-      <div className="mt-8 flex flex-col-reverse md:flex-row md:items-start">
-        <form className="mt-6 flex-grow md:mt-0 md:pr-12">
+      <form className="mt-8 flex flex-col-reverse md:flex-row md:items-start">
+        <div className="mt-6 flex-grow md:mt-0 md:pr-12">
           <div className="flex flex-col flex-wrap sm:flex-row">
             <div className="truncate pt-3 capitalize sm:w-[20%] sm:text-right">
               Email
             </div>
             <div className="sm:w-[80%] sm:pl-5">
-              <div className="pt-3 text-gray-700">du***********@gmail.com</div>
+              <div className="pt-3 text-gray-700">{profile?.email}</div>
             </div>
           </div>
           <div className="mt-6 flex flex-col flex-wrap sm:flex-row">
@@ -26,7 +85,15 @@ const Profile = () => {
               Tên
             </div>
             <div className="sm:w-[80%] sm:pl-5">
-              <Input className="w-full rounded-sm border border-gray-300 px-3 py-2 outline-none focus:border-gray-500 focus:shadow-sm" />
+              <Input
+                className="w-full rounded-sm border border-gray-300 px-3 py-2 outline-none focus:border-gray-500 focus:shadow-sm"
+                {...register("name")}
+                name="name"
+                placeholder="Tên"
+              />
+              <div className="mt-1 text-red-600 min-h-[1.5rem] text-sm">
+                {errors.name?.message}
+              </div>
             </div>
           </div>
           <div className="mt-2 flex flex-col flex-wrap sm:flex-row">
@@ -34,7 +101,21 @@ const Profile = () => {
               Số điện thoại
             </div>
             <div className="sm:w-[80%] sm:pl-5">
-              <Input className="w-full rounded-sm border border-gray-300 px-3 py-2 outline-none focus:border-gray-500 focus:shadow-sm" />
+              <Controller
+                control={control}
+                name="phone"
+                render={({ field }) => (
+                  <InputNumber
+                    className="w-full rounded-sm border border-gray-300 px-3 py-2 outline-none focus:border-gray-500 focus:shadow-sm"
+                    placeholder="Số điện thoại"
+                    {...field}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
+              <div className="mt-1 text-red-600 min-h-[1.5rem] text-sm">
+                {errors.phone?.message}
+              </div>
             </div>
           </div>
           <div className="mt-2 flex flex-col flex-wrap sm:flex-row">
@@ -42,7 +123,15 @@ const Profile = () => {
               Địa chỉ
             </div>
             <div className="sm:w-[80%] sm:pl-5">
-              <Input className="w-full rounded-sm border border-gray-300 px-3 py-2 outline-none focus:border-gray-500 focus:shadow-sm" />
+              <Input
+                className="w-full rounded-sm border border-gray-300 px-3 py-2 outline-none focus:border-gray-500 focus:shadow-sm"
+                {...register("address")}
+                name="address"
+                placeholder="Địa chỉ"
+              />
+              <div className="mt-1 text-red-600 min-h-[1.5rem] text-sm">
+                {errors.address?.message}
+              </div>
             </div>
           </div>
           <div className="mt-2 flex flex-col flex-wrap sm:flex-row">
@@ -61,9 +150,15 @@ const Profile = () => {
                   <option disabled>Năm</option>
                 </select>
               </div>
+              <Button
+                className="flex items-center text-center bg-orange-500 mt-3 text-white px-4 font-normal cursor-pointer"
+                type="submit"
+              >
+                Lưu
+              </Button>
             </div>
           </div>
-        </form>
+        </div>
         <div className="flex justify-center md:w-72 md:border-l md:border-l-gray-200">
           <div className="flex flex-col items-center">
             <div className="my-5 h-24 w-24">
@@ -74,7 +169,10 @@ const Profile = () => {
               />
             </div>
             <input className="hidden" type="file" accept=".jpg,.jpeg,.png" />
-            <button className="flex h-10 items-center justify-end rounded-sm border bg-white px-6 text-sm text-gray-600 shadow-sm">
+            <button
+              className="flex h-10 items-center justify-end rounded-sm border bg-white px-6 text-sm text-gray-600 shadow-sm"
+              type="button"
+            >
               Chọn ảnh
             </button>
             <div className="mt-3 text-gray-400">
@@ -83,7 +181,7 @@ const Profile = () => {
             </div>
           </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 };

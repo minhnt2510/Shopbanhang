@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { schema, type Schema } from "../../utils/rules";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -21,12 +21,12 @@ const Register = () => {
     getValues,
     setError,
     formState: { errors },
-  } = useForm<Schema>({
+  } = useForm<FormData>({
     resolver: yupResolver(registerSchema),
   });
   // --- Mutation đăng ký ---
   const registerAccountMutation = useMutation({
-    mutationFn: (body: Omit<Schema, "confirmPassword">) =>
+    mutationFn: (body: Omit<FormData, "confirmPassword">) =>
       registerAccount(body),
     onSuccess: (data) => {
       console.log("Đăng ký thành công:", data);
