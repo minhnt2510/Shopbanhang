@@ -9,6 +9,7 @@ import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import DateSelect from "../../components/DateSelect";
 import { AppContext } from "../../../../Context/app.context";
 import { setProfileToLS } from "../../../../utils/auth";
+import InputFile from "../../../../components/InputFile";
 type FormData = Pick<
   UserSchema,
   "name" | "address" | "phone" | "date_of_birth" | "avatar"
@@ -102,14 +103,9 @@ const Profile = () => {
     }
   });
 
-  const handleUpload = () => {
-    fileInputRef.current?.click();
+  const handleChangeFile = (file?: File) => {
+    setFile(file);
   };
-  const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const fileFromLocal = event.target.files?.[0];
-    setFile(fileFromLocal);
-  };
-
   return (
     <div className="rounded-sm bg-white px-2 pb-10 shadow md:px-7 md:pb-20">
       <div className="border-b border-b-gray-200 py-6">
@@ -209,20 +205,7 @@ const Profile = () => {
                 className="w-full h-full rounded-full object-cover"
               />
             </div>
-            <input
-              className="hidden"
-              type="file"
-              accept=".jpg,.jpeg,.png"
-              ref={fileInputRef}
-              onChange={onFileChange}
-            />
-            <button
-              className="flex h-10 items-center justify-end rounded-sm border bg-white px-6 text-sm text-gray-600 shadow-sm"
-              type="button"
-              onClick={handleUpload}
-            >
-              Chọn ảnh
-            </button>
+            <InputFile onChange={handleChangeFile} />
             <div className="mt-3 text-gray-400">
               <div>Dụng lượng file tối đa 1 MB</div>
               <div>Định dạng:.JPEG, .PNG</div>

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import path from "../../../../constants/path";
 import { useContext } from "react";
 import { AppContext } from "../../../../Context/app.context";
@@ -20,9 +20,13 @@ const UserSideNav = () => {
         </Link>
         <div className="flex-grow pl-4">
           <div className="mb-1 truncate font-semibold text-gray-600">minh</div>
-          <Link
+          <NavLink
             to={path.profile}
-            className="flex items-center capitalize text-gray-500"
+            className={({ isActive }) =>
+              `flex items-center capitalize transition-colors ${
+                isActive ? "text-orange" : "text-gray-600"
+              }`
+            }
           >
             <svg
               width={12}
@@ -38,7 +42,7 @@ const UserSideNav = () => {
               />
             </svg>
             Sửa hồ sơ
-          </Link>
+          </NavLink>
         </div>
       </div>
       <div className="mt-7">
@@ -51,9 +55,13 @@ const UserSideNav = () => {
           </div>
           Tài khoản của tôi
         </Link>
-        <Link
-          to={path.changePassword}
-          className="mt-4 flex items-center capitalize text-gray-600 transition-colors"
+        <NavLink
+          to={path.historyPurchase}
+          className={({ isActive }) =>
+            `mt-4 flex items-center capitalize transition-colors ${
+              isActive ? "text-orange" : "text-gray-600"
+            }`
+          }
         >
           <div className="mr-3 h-[22px] w-[22px]">
             <img
@@ -63,10 +71,14 @@ const UserSideNav = () => {
             />
           </div>
           Đổi mật khẩu
-        </Link>
-        <Link
-          to={path.historyPurchase}
-          className="mt-4 flex items-center capitalize text-gray-600 transition-colors"
+        </NavLink>
+        <NavLink
+          to={path.changePassword}
+          className={({ isActive }) =>
+            `mt-4 flex items-center capitalize transition-colors ${
+              isActive ? "text-orange" : "text-gray-600"
+            }`
+          }
         >
           <div className="mr-3 h-[22px] w-[22px]">
             <img
@@ -76,7 +88,7 @@ const UserSideNav = () => {
             />
           </div>
           Đơn mua
-        </Link>
+        </NavLink>
       </div>
     </div>
   );
