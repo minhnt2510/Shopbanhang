@@ -63,12 +63,12 @@ const useRouteElement = () => {
               element: <Profile />,
             },
             {
-              path: path.historyPurchase,
-              element: <HistoryPurchase />,
-            },
-            {
               path: path.changePassword,
               element: <ChangePassword />,
+            },
+            {
+              path: path.historyPurchase,
+              element: <HistoryPurchase />,
             },
           ],
         },

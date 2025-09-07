@@ -56,7 +56,7 @@ const UserSideNav = () => {
           Tài khoản của tôi
         </Link>
         <NavLink
-          to={path.historyPurchase}
+          to={path.changePassword}
           className={({ isActive }) =>
             `mt-4 flex items-center capitalize transition-colors ${
               isActive ? "text-orange" : "text-gray-600"
@@ -73,7 +73,7 @@ const UserSideNav = () => {
           Đổi mật khẩu
         </NavLink>
         <NavLink
-          to={path.changePassword}
+          to={path.historyPurchase}
           className={({ isActive }) =>
             `mt-4 flex items-center capitalize transition-colors ${
               isActive ? "text-orange" : "text-gray-600"

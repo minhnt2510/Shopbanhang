@@ -6,13 +6,7 @@ import http from "../utils/http";
 export interface BodyUpdateProfile
   extends Omit<User, "_id" | "roles" | "createdAt" | "updatedAt" | "email"> {
   password?: string;
-  newPassword?: string;
-}
-
-// Interface riêng cho update password
-export interface BodyUpdatePassword {
-  password: string;
-  newPassword: string;
+  new_password?: string;
 }
 
 const userApi = {

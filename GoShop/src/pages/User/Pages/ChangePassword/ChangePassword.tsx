@@ -1,6 +1,6 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 import { toast } from "react-toastify";
 import Button from "../../../../components/Button";
 import Input from "../../../../components/Input";
@@ -8,38 +8,35 @@ import { userSchema } from "../../../../utils/rules";
 import { isAxiosUnprocessableEntityError } from "../../../../utils/util";
 import userApi, { type BodyUpdateProfile } from "../../../../api/user.api";
 import type { ErrorResponse } from "../../../../Types/util.type";
-import type { InferType } from "yup";
 
 // Use consistent field names throughout
 type FormData = {
   password: string;
-  newPassword: string;
+  new_password: string;
   confirmPassword: string;
 };
 
 // Pick the correct fields from userSchema
 const passwordSchema = userSchema.pick([
   "password",
-  "newPassword",
+  "new_password",
   "confirmPassword",
 ]);
-
-type PasswordSchema = InferType<typeof passwordSchema>;
 
 export default function ChangePassword() {
   const {
     register,
-    handleSubmit,
     formState: { errors },
-    reset,
+    handleSubmit,
     setError,
-  } = useForm<PasswordSchema>({
-    resolver: yupResolver(passwordSchema),
+    reset,
+  } = useForm<FormData>({
     defaultValues: {
       password: "",
-      newPassword: "",
       confirmPassword: "",
+      new_password: "",
     },
+    resolver: yupResolver(passwordSchema) as Resolver<FormData>,
   });
 
   // Use updateProfile instead of updatePassword
@@ -66,13 +63,24 @@ export default function ChangePassword() {
 
   const onSubmit = handleSubmit(async (data) => {
     try {
-      // Use updateProfile with password and newPassword fields
+      // Debug: Log data được gửi lên server
+      console.log("Data gửi lên server:", {
+        password: data.password,
+        newPassword: data.new_password,
+      });
+
       await updateProfileMutation.mutateAsync({
         password: data.password,
-        newPassword: data.newPassword,
+        new_password: data.new_password,
       } as BodyUpdateProfile);
     } catch (error) {
-      console.log(error);
+      console.error("Chi tiết lỗi:", error);
+
+      // Log thêm thông tin từ response
+      if (error instanceof Error && "response" in error) {
+        console.error("Response data:", (error as any).response?.data);
+        console.error("Response status:", (error as any).response?.status);
+      }
     }
   });
 
@@ -113,12 +121,12 @@ export default function ChangePassword() {
             <div className="sm:w-[80%] sm:pl-5">
               <Input
                 className="w-full rounded-sm border border-gray-300 px-3 py-2 outline-none focus:border-gray-500 focus:shadow-sm"
-                {...register("newPassword")}
+                {...register("new_password")}
                 type="password"
                 placeholder="Mật khẩu mới"
               />
               <div className="mt-1 text-red-600 min-h-[1.5rem] text-sm">
-                {errors.newPassword?.message}
+                {errors.new_password?.message}
               </div>
             </div>
           </div>

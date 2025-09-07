@@ -51,7 +51,7 @@ export const userSchema = yup.object({
   avatar: yup.string().max(1000, "Độ dài tối đa là 1000 ký tự"),
   date_of_birth: yup.date().max(new Date(), "Hãy chọn một ngày trong quá khứ"),
   password: schema.fields["password"],
-  newPassword: yup
+  new_password: yup
     .string()
     .required("Mật khẩu mới là bắt buộc")
     .min(6, "Mật khẩu phải có ít nhất 6 ký tự")
@@ -67,7 +67,7 @@ export const userSchema = yup.object({
   confirmPassword: yup
     .string()
     .required("Nhập lại mật khẩu là bắt buộc")
-    .oneOf([yup.ref("newPassword")], "Mật khẩu không khớp"),
+    .oneOf([yup.ref("new_password")], "Mật khẩu không khớp"),
 });
 
 export type UserSchema = yup.InferType<typeof userSchema>;
