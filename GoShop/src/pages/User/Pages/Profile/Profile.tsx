@@ -1,12 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
-import Button from "../../../../components/Button";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import Input from "../../../../components/Input";
-import userApi from "../../../../api/user.api";
+import userApi, { type BodyUpdateProfile } from "../../../../api/user.api";
 import { userSchema, type UserSchema } from "../../../../utils/rules";
 import { Controller, useForm, type Resolver } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import InputNumber from "../../../../components/InputNumber";
 import { useEffect } from "react";
+import DateSelect from "../../components/DateSelect";
+import Button from "../../../../components/Button";
 
 type FormData = Pick<
   UserSchema,
@@ -47,6 +48,10 @@ const Profile = () => {
   const profile = profileData?.data.data;
   console.log(profile);
 
+  const updateProfileMutation = useMutation({
+    mutationFn: (body: BodyUpdateProfile) => userApi.updateProfile(body),
+  });
+
   useEffect(() => {
     if (profile) {
       setValue("name", profile.name);
@@ -60,6 +65,11 @@ const Profile = () => {
     }
   }, [profile, setValue]);
 
+  const onSubmit = handleSubmit(async (data) => {
+    console.log(data);
+    //  await updateProfileMutation.mutate()
+  });
+
   return (
     <div className="rounded-sm bg-white px-2 pb-10 shadow md:px-7 md:pb-20">
       <div className="border-b border-b-gray-200 py-6">
@@ -70,7 +80,10 @@ const Profile = () => {
           Quản lý thông tin hồ sơ để bảo mật tài khoản
         </div>
       </div>
-      <form className="mt-8 flex flex-col-reverse md:flex-row md:items-start">
+      <form
+        className="mt-8 flex flex-col-reverse md:flex-row md:items-start"
+        onSubmit={onSubmit}
+      >
         <div className="mt-6 flex-grow md:mt-0 md:pr-12">
           <div className="flex flex-col flex-wrap sm:flex-row">
             <div className="truncate pt-3 capitalize sm:w-[20%] sm:text-right">
@@ -108,6 +121,7 @@ const Profile = () => {
                   <InputNumber
                     className="w-full rounded-sm border border-gray-300 px-3 py-2 outline-none focus:border-gray-500 focus:shadow-sm"
                     placeholder="Số điện thoại"
+                    type="number"
                     {...field}
                     onChange={field.onChange}
                   />
@@ -134,30 +148,17 @@ const Profile = () => {
               </div>
             </div>
           </div>
-          <div className="mt-2 flex flex-col flex-wrap sm:flex-row">
-            <div className="truncate pt-3 capitalize sm:w-[20%] sm:text-right">
-              Ngày sinh
-            </div>
-            <div className="sm:w-[80%] sm:pl-5">
-              <div className="flex justify-between">
-                <select className="h-10 w-[32%] rounded-sm border border-black/10 px-3">
-                  <option disabled>Ngày</option>
-                </select>
-                <select className="h-10 w-[32%] rounded-sm border border-black/10 px-3">
-                  <option disabled>Tháng</option>
-                </select>
-                <select className="h-10 w-[32%] rounded-sm border border-black/10 px-3">
-                  <option disabled>Năm</option>
-                </select>
-              </div>
-              <Button
-                className="flex items-center text-center bg-orange-500 mt-3 text-white px-4 font-normal cursor-pointer"
-                type="submit"
-              >
-                Lưu
-              </Button>
-            </div>
-          </div>
+          <Controller
+            control={control}
+            name="date_of_birth"
+            render={({ field }) => (
+              <DateSelect
+                errorMessage={errors.date_of_birth?.message}
+                onChange={field.onChange}
+                value={field.value}
+              />
+            )}
+          />
         </div>
         <div className="flex justify-center md:w-72 md:border-l md:border-l-gray-200">
           <div className="flex flex-col items-center">
