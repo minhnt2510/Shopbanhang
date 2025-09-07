@@ -1,7 +1,7 @@
 import { Search, ShoppingCart, User, Menu, Heart, Bell } from "lucide-react";
 import { createSearchParams, Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
-import { AppContext } from "../../Context/app.context";
+import { AppContext, AppProvider } from "../../Context/app.context";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { logout } from "../../api/auth.api";
 import Input from "../Input";
@@ -24,6 +24,14 @@ const nameSchema = schema.pick(["name"]);
 const MAX_PURCHASE = 5;
 
 const Header = () => {
+  const {
+    profile,
+    isAuthenticated,
+    setExtendedPurchases,
+    setProfile,
+    setIsAuthenticated,
+  } = useContext(AppContext);
+
   const queryClient = useQueryClient();
 
   const queryConfig = useQueryConfig();
@@ -33,7 +41,6 @@ const Header = () => {
     },
     resolver: yupResolver(nameSchema),
   });
-  const { setIsAuthenticated, isAuthenticated } = useContext(AppContext);
   const logoutMutation = useMutation({
     mutationFn: logout,
     onSuccess: () => {
@@ -259,9 +266,16 @@ const Header = () => {
                     </div>
                   }
                 >
-                  <Button className="bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 border border-white/20 rounded-xl p-3 transition-all duration-300 hover:scale-110 hover:shadow-lg">
-                    <User className="w-5 h-5" />
-                  </Button>
+                  <div className="flex mr-2 h-6 w-6 flex-shrink-0">
+                    <img
+                      src={profile?.avatar}
+                      alt="avatar"
+                      className="h-full w-full rounded-full object-cover"
+                    />
+                    <div className="text-white hover:text-gray-400 text-sm">
+                      {profile?.email}
+                    </div>
+                  </div>
                 </Popover>
               )}
             </div>

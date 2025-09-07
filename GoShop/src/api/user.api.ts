@@ -2,10 +2,17 @@ import type { User } from "../Types/user.type";
 import type { ResponseAPI } from "../Types/util.type";
 import http from "../utils/http";
 
+// Interface cho update profile
 export interface BodyUpdateProfile
   extends Omit<User, "_id" | "roles" | "createdAt" | "updatedAt" | "email"> {
   password?: string;
   newPassword?: string;
+}
+
+// Interface riêng cho update password
+export interface BodyUpdatePassword {
+  password: string;
+  newPassword: string;
 }
 
 const userApi = {
@@ -15,6 +22,7 @@ const userApi = {
   updateProfile(body: BodyUpdateProfile) {
     return http.put<ResponseAPI<User>>("user", body);
   },
+
   uploadAvatar(body: FormData) {
     return http.post<ResponseAPI<string>>("user/upload-avatar", body, {
       headers: {

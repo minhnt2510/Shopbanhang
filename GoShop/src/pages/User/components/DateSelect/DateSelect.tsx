@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { range } from "lodash";
 import Button from "../../../../components/Button";
 
@@ -14,6 +14,16 @@ const DateSelect = ({ value, onChange, errorMessage }: Props) => {
     month: value?.getMonth() || 0,
     year: value?.getFullYear() || 1990,
   });
+
+  useEffect(() => {
+    if (value) {
+      setDate({
+        date: value?.getDate(),
+        month: value?.getMonth(),
+        year: value?.getFullYear(),
+      });
+    }
+  }, [value]);
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const { value: valueFromSelect, name } = event.target;
