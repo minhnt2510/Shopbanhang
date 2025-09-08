@@ -9,7 +9,7 @@ import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import DateSelect from "../../components/DateSelect";
 import { AppContext } from "../../../../Context/app.context";
 import { setProfileToLS } from "../../../../utils/auth";
-import InputFile from "../../../../components/InputFile";
+import { getAvatarURL } from "../../../../utils/util";
 type FormData = Pick<
   UserSchema,
   "name" | "address" | "phone" | "date_of_birth" | "avatar"
@@ -78,6 +78,7 @@ const Profile = () => {
 
   const avatar = watch("avatar");
 
+  // Sửa lại phần onSubmit trong Profile component
   const onSubmit = handleSubmit(async (data) => {
     try {
       let avatarName = avatar;
@@ -88,24 +89,44 @@ const Profile = () => {
         avatarName = uploadRes.data.data;
         setValue("avatar", avatarName);
       }
+
       const res = await updateProfileMutation.mutateAsync({
         ...data,
         date_of_birth: data.date_of_birth?.toISOString(),
         avatar: avatarName,
       } as BodyUpdateProfile);
-      setProfile(res.data.data ?? null);
-      if (res.data.data) {
-        setProfileToLS(res.data.data);
+
+      // Cập nhật profile trong context và localStorage
+      const updatedProfile = res.data.data;
+      if (updatedProfile) {
+        // Cập nhật context trước
+        setProfile(updatedProfile);
+        // Sau đó cập nhật localStorage
+        setProfileToLS(updatedProfile);
+
+        console.log("Updated profile:", updatedProfile); // Debug
+        console.log("Updated avatar:", updatedProfile.avatar); // Debug
       }
+
+      // Reset file preview
+      setFile(undefined);
       refetch();
+
+      // Hiển thị thông báo thành công (tùy chọn)
+      console.log("Profile updated successfully!");
     } catch (error) {
       console.log(error);
     }
   });
 
-  const handleChangeFile = (file?: File) => {
-    setFile(file);
+  const handleUpload = () => {
+    fileInputRef.current?.click();
   };
+  const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const fileFromLocal = event.target.files?.[0];
+    setFile(fileFromLocal);
+  };
+
   return (
     <div className="rounded-sm bg-white px-2 pb-10 shadow md:px-7 md:pb-20">
       <div className="border-b border-b-gray-200 py-6">
@@ -200,12 +221,25 @@ const Profile = () => {
           <div className="flex flex-col items-center">
             <div className="my-5 h-24 w-24">
               <img
-                src={previewImage || avatar}
-                alt=""
+                src={previewImage || getAvatarURL(avatar)}
+                alt="avatar"
                 className="w-full h-full rounded-full object-cover"
               />
             </div>
-            <InputFile onChange={handleChangeFile} />
+            <input
+              className="hidden"
+              type="file"
+              accept=".jpg,.jpeg,.png"
+              ref={fileInputRef}
+              onChange={onFileChange}
+            />
+            <button
+              className="flex h-10 items-center justify-end rounded-sm border bg-white px-6 text-sm text-gray-600 shadow-sm"
+              type="button"
+              onClick={handleUpload}
+            >
+              Chọn ảnh
+            </button>
             <div className="mt-3 text-gray-400">
               <div>Dụng lượng file tối đa 1 MB</div>
               <div>Định dạng:.JPEG, .PNG</div>

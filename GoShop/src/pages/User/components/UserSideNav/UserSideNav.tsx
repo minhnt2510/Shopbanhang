@@ -2,9 +2,12 @@ import { Link, NavLink } from "react-router-dom";
 import path from "../../../../constants/path";
 import { useContext } from "react";
 import { AppContext } from "../../../../Context/app.context";
+import { getAvatarURL } from "../../../../utils/util";
 
 const UserSideNav = () => {
   const { profile } = useContext(AppContext);
+  console.log("getAvatarURL result:", getAvatarURL(profile?.avatar));
+
   return (
     <div>
       <div className="flex items-center border-b border-b-gray-200 py-4">
@@ -13,8 +16,8 @@ const UserSideNav = () => {
           className="h-12 w-12 flex-shrink-0 overflow-hidden rounded-full border border-black/10"
         >
           <img
-            src={profile?.avatar}
-            alt="avatar"
+            src={getAvatarURL(profile?.avatar)}
+            alt={profile?.name || "avatar"}
             className="h-full w-full object-cover"
           />
         </Link>
@@ -51,12 +54,16 @@ const UserSideNav = () => {
           className="flex items-center capitalize text-orange transition-colors"
         >
           <div className="mr-3 h-[22px] w-[22px]">
-            <img src={profile?.avatar} alt="avatar" className="h-full w-full" />
+            <img
+              src={getAvatarURL(profile?.avatar)}
+              alt={profile?.name || "avatar"}
+              className="h-full w-full"
+            />
           </div>
           Tài khoản của tôi
         </Link>
         <NavLink
-          to={path.changePassword}
+          to={path.historyPurchase}
           className={({ isActive }) =>
             `mt-4 flex items-center capitalize transition-colors ${
               isActive ? "text-orange" : "text-gray-600"
@@ -73,7 +80,7 @@ const UserSideNav = () => {
           Đổi mật khẩu
         </NavLink>
         <NavLink
-          to={path.historyPurchase}
+          to={path.changePassword}
           className={({ isActive }) =>
             `mt-4 flex items-center capitalize transition-colors ${
               isActive ? "text-orange" : "text-gray-600"

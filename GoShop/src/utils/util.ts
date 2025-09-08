@@ -46,5 +46,11 @@ export const getIdFromNameId = (nameId: string) => {
 };
 
 export const getAvatarURL = (avatarName?: string) => {
-  return avatarName ? `${config.baseURL}images/${avatarName}` : userImage;
+  if (!avatarName)
+    return "https://via.placeholder.com/150x150/cccccc/ffffff?text=U";
+  return avatarName.startsWith("http")
+    ? avatarName
+    : `${config.baseURL}images/${avatarName}`;
+  // Trong utils/util.js
 };
+console.log("userImage:", userImage); // Xem userImage là gì
