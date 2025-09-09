@@ -1,13 +1,12 @@
 import { Link, NavLink } from "react-router-dom";
 import path from "../../../../constants/path";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AppContext } from "../../../../Context/app.context";
 import { getAvatarURL } from "../../../../utils/util";
 
 const UserSideNav = () => {
   const { profile } = useContext(AppContext);
   console.log("getAvatarURL result:", getAvatarURL(profile?.avatar));
-
   return (
     <div>
       <div className="flex items-center border-b border-b-gray-200 py-4">
@@ -63,7 +62,7 @@ const UserSideNav = () => {
           Tài khoản của tôi
         </Link>
         <NavLink
-          to={path.historyPurchase}
+          to={path.changePassword}
           className={({ isActive }) =>
             `mt-4 flex items-center capitalize transition-colors ${
               isActive ? "text-orange" : "text-gray-600"
@@ -80,7 +79,7 @@ const UserSideNav = () => {
           Đổi mật khẩu
         </NavLink>
         <NavLink
-          to={path.changePassword}
+          to={path.historyPurchase}
           className={({ isActive }) =>
             `mt-4 flex items-center capitalize transition-colors ${
               isActive ? "text-orange" : "text-gray-600"

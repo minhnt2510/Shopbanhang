@@ -46,8 +46,8 @@ export const AppProvider = ({
 
   const reset = () => {
     setIsAuthenticated(false);
-    setProfile(null);
     setExtendedPurchases([]);
+    setProfile(null);
   };
 
   return (

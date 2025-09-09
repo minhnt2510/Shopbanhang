@@ -78,7 +78,6 @@ const Profile = () => {
 
   const avatar = watch("avatar");
 
-  // Sửa lại phần onSubmit trong Profile component
   const onSubmit = handleSubmit(async (data) => {
     try {
       let avatarName = avatar;
@@ -89,31 +88,16 @@ const Profile = () => {
         avatarName = uploadRes.data.data;
         setValue("avatar", avatarName);
       }
-
       const res = await updateProfileMutation.mutateAsync({
         ...data,
         date_of_birth: data.date_of_birth?.toISOString(),
         avatar: avatarName,
       } as BodyUpdateProfile);
-
-      // Cập nhật profile trong context và localStorage
-      const updatedProfile = res.data.data;
-      if (updatedProfile) {
-        // Cập nhật context trước
-        setProfile(updatedProfile);
-        // Sau đó cập nhật localStorage
-        setProfileToLS(updatedProfile);
-
-        console.log("Updated profile:", updatedProfile); // Debug
-        console.log("Updated avatar:", updatedProfile.avatar); // Debug
+      setProfile(res.data.data ?? null);
+      if (res.data.data) {
+        setProfileToLS(res.data.data);
       }
-
-      // Reset file preview
-      setFile(undefined);
       refetch();
-
-      // Hiển thị thông báo thành công (tùy chọn)
-      console.log("Profile updated successfully!");
     } catch (error) {
       console.log(error);
     }
