@@ -1,7 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import productApi from "../../api/product.api";
-import ProductRating from "../../components/ProductRating";
 import DOMPurify from "dompurify";
 import {
   formatCurrency,
@@ -20,6 +19,7 @@ import purchaseApi from "../../api/puchase.api";
 import { toast } from "react-toastify";
 import { purchasesStatus } from "../../constants/purchase";
 import path from "../../constants/path";
+import ProductRating from "../../components/ProductRating";
 
 const ProductDetail = () => {
   const queryClient = useQueryClient();
