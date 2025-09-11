@@ -1,12 +1,16 @@
 import { Link, NavLink } from "react-router-dom";
 import path from "../../../../constants/path";
-import { useContext, useEffect } from "react";
+import { useContext, useMemo, useCallback } from "react";
 import { AppContext } from "../../../../Context/app.context";
 import { getAvatarURL } from "../../../../utils/util";
 
 const UserSideNav = () => {
   const { profile } = useContext(AppContext);
-  console.log("getAvatarURL result:", getAvatarURL(profile?.avatar));
+  const avatarSrc = useMemo(
+    () => getAvatarURL(profile?.avatar),
+    [profile?.avatar]
+  );
+
   return (
     <div>
       <div className="flex items-center border-b border-b-gray-200 py-4">
@@ -15,9 +19,11 @@ const UserSideNav = () => {
           className="h-12 w-12 flex-shrink-0 overflow-hidden rounded-full border border-black/10"
         >
           <img
-            src={getAvatarURL(profile?.avatar)}
+            src={avatarSrc}
             alt={profile?.name || "avatar"}
             className="h-full w-full object-cover"
+            loading="lazy"
+            decoding="async"
           />
         </Link>
         <div className="flex-grow pl-4">
@@ -47,6 +53,7 @@ const UserSideNav = () => {
           </NavLink>
         </div>
       </div>
+
       <div className="mt-7">
         <Link
           to={path.profile}
@@ -54,13 +61,16 @@ const UserSideNav = () => {
         >
           <div className="mr-3 h-[22px] w-[22px]">
             <img
-              src={getAvatarURL(profile?.avatar)}
+              src={avatarSrc}
               alt={profile?.name || "avatar"}
               className="h-full w-full"
+              loading="lazy"
+              decoding="async"
             />
           </div>
           Tài khoản của tôi
         </Link>
+
         <NavLink
           to={path.changePassword}
           className={({ isActive }) =>
@@ -74,10 +84,13 @@ const UserSideNav = () => {
               src="https://cf.shopee.vn/file/ba61750a46794d8847c3f463c5e71cc4"
               alt=""
               className="h-full w-full"
+              loading="lazy"
+              decoding="async"
             />
           </div>
           Đổi mật khẩu
         </NavLink>
+
         <NavLink
           to={path.historyPurchase}
           className={({ isActive }) =>
@@ -91,6 +104,8 @@ const UserSideNav = () => {
               src="https://cf.shopee.vn/file/f0049e9df4e536bc3e7f140d071e9078"
               alt=""
               className="h-full w-full"
+              loading="lazy"
+              decoding="async"
             />
           </div>
           Đơn mua

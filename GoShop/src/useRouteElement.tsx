@@ -15,6 +15,7 @@ import UserLayout from "./pages/User/Layout/UserLayout";
 import HistoryPurchase from "./pages/User/Pages/HistoryPurchase";
 import ChangePassword from "./pages/User/Pages/ChangePassword";
 import Profile from "./pages/User/Pages/Profile";
+import NotFound from "./pages/NotFound";
 
 // Route yêu cầu đăng nhập
 const ProtectedRoute = () => {
@@ -106,7 +107,11 @@ const useRouteElement = () => {
     },
     {
       path: "*",
-      element: <Navigate to="/" />,
+      element: (
+        <MainLayout>
+          <NotFound />
+        </MainLayout>
+      ),
     },
   ]);
 
