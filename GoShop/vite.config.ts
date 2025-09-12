@@ -1,25 +1,8 @@
-// eslint-disable-next-line import/no-unresolved
-import { defineConfig } from "vitest/config";
+import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import path from "path";
-import { visualizer } from "rollup-plugin-visualizer";
+import tailwindcss from "@tailwindcss/vite";
 
-// https://vitejs.dev/config/
+// https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), visualizer()] as any,
-  test: {
-    environment: "jsdom",
-    setupFiles: path.resolve(__dirname, "./vitest.setup.js"),
-  },
-  server: {
-    port: 3000,
-  },
-  css: {
-    devSourcemap: true,
-  },
-  resolve: {
-    alias: {
-      src: path.resolve(__dirname, "./src"),
-    },
-  },
+  plugins: [react(), tailwindcss()],
 });
