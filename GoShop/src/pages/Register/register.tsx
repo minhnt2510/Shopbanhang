@@ -1,4 +1,3 @@
-import { useForm, type Resolver } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { schema, type Schema } from "../../utils/rules";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -9,6 +8,7 @@ import { isAxiosUnprocessableEntityError } from "../../utils/util";
 import type { ResponseAPI } from "../../Types/util.type";
 import { AppContext } from "../../Context/app.context";
 import { useContext } from "react";
+import { useForm } from "react-hook-form";
 
 type FormData = Pick<Schema, "email" | "password" | "confirmPassword">;
 const registerSchema = schema.pick(["email", "password", "confirmPassword"]);

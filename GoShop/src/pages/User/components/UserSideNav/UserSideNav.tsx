@@ -1,8 +1,8 @@
 import { Link, NavLink } from "react-router-dom";
 import path from "../../../../constants/path";
-import { useContext, useEffect } from "react";
 import { AppContext } from "../../../../Context/app.context";
 import { getAvatarURL } from "../../../../utils/util";
+import { useContext } from "react";
 
 const UserSideNav = () => {
   const { profile } = useContext(AppContext);

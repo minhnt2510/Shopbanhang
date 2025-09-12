@@ -1,7 +1,7 @@
-import { Search, ShoppingCart, User, Menu, Heart, Bell } from "lucide-react";
+import { Search, ShoppingCart, Menu, Heart, Bell } from "lucide-react";
 import { createSearchParams, Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
-import { AppContext, AppProvider } from "../../Context/app.context";
+import { AppContext } from "../../Context/app.context";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { logout } from "../../api/auth.api";
 import Input from "../Input";
@@ -24,13 +24,8 @@ const nameSchema = schema.pick(["name"]);
 const MAX_PURCHASE = 5;
 
 const Header = () => {
-  const {
-    profile,
-    isAuthenticated,
-    setExtendedPurchases,
-    setProfile,
-    setIsAuthenticated,
-  } = useContext(AppContext);
+  const { profile, isAuthenticated, setIsAuthenticated } =
+    useContext(AppContext);
 
   const queryClient = useQueryClient();
 

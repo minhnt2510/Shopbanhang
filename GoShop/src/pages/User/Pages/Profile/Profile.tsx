@@ -33,7 +33,6 @@ const Profile = () => {
     handleSubmit,
     setValue,
     formState: { errors },
-    setError,
   } = useForm<FormData>({
     defaultValues: {
       name: "",
