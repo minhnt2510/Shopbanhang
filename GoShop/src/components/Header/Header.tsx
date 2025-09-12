@@ -5,7 +5,6 @@ import { AppContext } from "../../Context/app.context";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { logout } from "../../api/auth.api";
 import Input from "../Input";
-import Button from "../Button/Button";
 import useQueryConfig from "../../hooks/useQueryConfig";
 import { useForm } from "react-hook-form";
 import { schema, type Schema } from "../../utils/rules";
@@ -16,6 +15,7 @@ import { formatCurrency } from "../../utils/util";
 import Popover from "../Popover/Popover";
 import { purchasesStatus } from "../../constants/purchase";
 import path from "../../constants/path";
+import Button from "../Button";
 
 type FormData = Pick<Schema, "name">;
 

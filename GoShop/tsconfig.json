@@ -3,5 +3,17 @@
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
-  ]
+  ],
+  "compilerOptions": {
+    "verbatimModuleSyntax": false,
+    "baseUrl": "./src",
+    "paths": {
+      "@hooks/*": ["hooks/*"],
+      "@components/*": ["components/*"],
+      "@utils/*": ["utils/*"],
+      "@api/*": ["api/*"],
+      "@constants/*": ["constants/*"]
+    },
+    "types": ["node"]
+  }
 }
