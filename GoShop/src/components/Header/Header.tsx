@@ -9,7 +9,7 @@ import useQueryConfig from "../../hooks/useQueryConfig";
 import { useForm } from "react-hook-form";
 import { schema, type Schema } from "../../utils/rules";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { omit } from "lodash";
+import omit from "lodash/omit";
 import purchaseApi from "../../api/puchase.api";
 import { formatCurrency } from "../../utils/util";
 import Popover from "../Popover/Popover";

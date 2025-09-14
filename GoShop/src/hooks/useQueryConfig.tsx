@@ -1,4 +1,5 @@
-import { omitBy, isUndefined } from "lodash";
+import omitBy from "lodash/omitBy";
+import isUndefined from "lodash/isUndefined";
 import useQueryParam from "./useQueryParam";
 import type { ProductListConfig } from "../Types/product.type";
 

@@ -9,7 +9,7 @@ import { formatCurrency, generateNameId } from "../../utils/util";
 import type { Purchase } from "../../Types/purchase.type";
 import { useContext, useEffect } from "react";
 import { produce } from "immer";
-import { keyBy } from "lodash";
+import keyBy from "lodash/keyBy";
 import { AppContext } from "../../Context/app.context";
 
 export default function Cart() {

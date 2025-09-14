@@ -7,7 +7,7 @@ import { schema, type Schema } from "../../../../utils/rules";
 import { yupResolver } from "@hookform/resolvers/yup";
 import type { NoUndefinedField } from "../../../../Types/util.type";
 import RatingStars from "../RatingStars";
-import { omit } from "lodash";
+import omit from "lodash/omit";
 import type { QueryConfig } from "../../../../hooks/useQueryConfig";
 
 interface Props {

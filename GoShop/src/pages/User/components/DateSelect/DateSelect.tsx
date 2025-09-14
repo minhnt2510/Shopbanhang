@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { range } from "lodash";
+import  range  from "lodash/range";
 import Button from "../../../../components/Button";
 
 interface Props {
