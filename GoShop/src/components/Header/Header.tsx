@@ -16,6 +16,8 @@ import Popover from "../Popover/Popover";
 import { purchasesStatus } from "../../constants/purchase";
 import path from "../../constants/path";
 import Button from "../Button";
+import { useTranslation } from "react-i18next";
+import { locales } from "../../i18n/i18n";
 
 type FormData = Pick<Schema, "name">;
 
@@ -24,6 +26,13 @@ const nameSchema = schema.pick(["name"]);
 const MAX_PURCHASE = 5;
 
 const Header = () => {
+  const { i18n } = useTranslation();
+  const currentLanguage = locales[i18n.language as keyof typeof locales];
+
+  const changeLanguage = (lng: "en" | "vi") => {
+    i18n.changeLanguage(lng);
+  };
+
   const { profile, isAuthenticated, setIsAuthenticated } =
     useContext(AppContext);
 
@@ -78,26 +87,53 @@ const Header = () => {
           <div className="container mx-auto flex justify-between items-center px-6">
             <span className="flex items-center gap-2">
               <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-              Miễn phí vận chuyển cho đơn hàng trên 500k
+              {i18n.language === "vi"
+                ? "Miễn phí vận chuyển cho đơn hàng trên 500k"
+                : "Free shipping for orders over 500k"}
             </span>
             <div className="flex items-center space-x-6">
               <span className="flex items-center gap-2">
                 <span className="w-1.5 h-1.5 bg-blue-400 rounded-full"></span>
                 Hotline: 1900-1234
               </span>
+
+              {/* Chọn ngôn ngữ */}
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => changeLanguage("vi")}
+                  className={`px-2 py-1 rounded-md text-xs font-semibold transition-all duration-300 ${
+                    i18n.language === "vi"
+                      ? "bg-blue-600 text-white"
+                      : "bg-slate-700 text-slate-300 hover:bg-slate-600"
+                  }`}
+                >
+                  VI
+                </button>
+                <button
+                  onClick={() => changeLanguage("en")}
+                  className={`px-2 py-1 rounded-md text-xs font-semibold transition-all duration-300 ${
+                    i18n.language === "en"
+                      ? "bg-blue-600 text-white"
+                      : "bg-slate-700 text-slate-300 hover:bg-slate-600"
+                  }`}
+                >
+                  EN
+                </button>
+              </div>
+
               {!isAuthenticated && (
                 <>
                   <Link
                     to="/login"
                     className="hover:text-blue-300 transition-all duration-300 hover:scale-105 font-medium"
                   >
-                    Đăng nhập
+                    {i18n.language === "vi" ? "Đăng nhập" : "Login"}
                   </Link>
                   <Link
                     to="/register"
                     className="hover:text-blue-300 transition-all duration-300 hover:scale-105 font-medium"
                   >
-                    Đăng ký
+                    {i18n.language === "vi" ? "Đăng ký" : "Register"}
                   </Link>
                 </>
               )}
