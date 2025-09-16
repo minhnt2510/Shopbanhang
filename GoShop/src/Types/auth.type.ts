@@ -6,3 +6,8 @@ export type AuthResponse = ResponseAPI<{
   expires: string;
   user: User;
 }>;
+export type AuthPayload = {
+  access_token: string;
+  expires: string;
+  user: User;
+};

@@ -30,15 +30,16 @@ const Login = () => {
   const loginAccountMutation = useMutation({
     mutationFn: (body: FormData) => loginAccount(body),
     onSuccess: (payload) => {
-      const { access_token, user } = payload.data; // payload là AuthResponse
+      const { access_token, user } = payload;
       if (access_token) saveAccesTokenToLS(access_token);
       if (user) {
         setProfile(user);
         setProfileToLS(user);
       }
-      setIsAuthenticated(Boolean(access_token));
+      setIsAuthenticated(true);
       navigate("/");
     },
+
     onError: (error: unknown) => {
       if (isAxiosUnprocessableEntityError<ResponseAPI<FormData>>(error)) {
         const formError = error.response?.data?.data;
