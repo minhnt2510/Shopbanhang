@@ -8,7 +8,7 @@ import {
   getIdFromNameId,
   rateSale,
 } from "../../utils/util";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import type {
   Product as productType,
   ProductListConfig,
@@ -20,6 +20,7 @@ import { toast } from "react-toastify";
 import { purchasesStatus } from "../../constants/purchase";
 import path from "../../constants/path";
 import ProductRating from "../../components/ProductRating";
+import { AppContext } from "../../Context/app.context";
 
 const ProductDetail = () => {
   const queryClient = useQueryClient();
@@ -29,6 +30,8 @@ const ProductDetail = () => {
     queryKey: ["product", id],
     queryFn: () => productApi.getProductDetail(id as string),
   });
+
+  const { isAuthenticated } = useContext(AppContext);
 
   const product = ProductDetailData?.data.data;
 
@@ -117,6 +120,10 @@ const ProductDetail = () => {
   };
 
   const addTocart = () => {
+    if (!isAuthenticated) {
+      navigate(path.login);
+      return;
+    }
     addToCartMutation.mutate(
       {
         buy_count: buyCount,
@@ -134,6 +141,10 @@ const ProductDetail = () => {
   };
 
   const buyNow = async () => {
+    if (!isAuthenticated) {
+      navigate(path.login);
+      return;
+    }
     const res = await addToCartMutation.mutateAsync({
       buy_count: buyCount,
       product_id: product?._id as string,

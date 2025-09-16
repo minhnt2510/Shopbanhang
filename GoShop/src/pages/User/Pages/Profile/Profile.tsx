@@ -1,6 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import Input from "../../../../components/Input";
-import userApi, { type BodyUpdateProfile } from "../../../../api/user.api";
 import { userSchema, type UserSchema } from "../../../../utils/rules";
 import { Controller, useForm, type Resolver } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -10,6 +9,8 @@ import DateSelect from "../../components/DateSelect";
 import { AppContext } from "../../../../Context/app.context";
 import { setProfileToLS } from "../../../../utils/auth";
 import { getAvatarURL } from "../../../../utils/util";
+import userApi, { type BodyUpdateProfile } from "../../../../api/user.api";
+
 type FormData = Pick<
   UserSchema,
   "name" | "address" | "phone" | "date_of_birth" | "avatar"
@@ -107,7 +108,13 @@ const Profile = () => {
   };
   const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const fileFromLocal = event.target.files?.[0];
-    setFile(fileFromLocal);
+    if (fileFromLocal) {
+      if (fileFromLocal.size > 1024 * 1024) {
+        alert("Dung lượng ảnh phải nhỏ hơn hoặc bằng 1MB");
+        return;
+      }
+      setFile(fileFromLocal);
+    }
   };
 
   return (
@@ -199,6 +206,14 @@ const Profile = () => {
               />
             )}
           />
+          <div className="mt-6 flex justify-end w-full">
+            <button
+              type="submit"
+              className="px-6 py-2 bg-orange-500 text-white rounded hover:bg-orange-600"
+            >
+              Lưu thay đổi
+            </button>
+          </div>
         </div>
         <div className="flex justify-center md:w-72 md:border-l md:border-l-gray-200">
           <div className="flex flex-col items-center">

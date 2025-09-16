@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import  range  from "lodash/range";
-import Button from "../../../../components/Button";
+import range from "lodash/range";
 
 interface Props {
   value?: Date;
@@ -87,12 +86,6 @@ const DateSelect = ({ value, onChange, errorMessage }: Props) => {
         <div className="mt-1 text-red-600 min-h-[1.5rem] text-sm">
           {errorMessage}
         </div>
-        <Button
-          className="flex items-center text-center bg-orange-500 mt-3 text-white px-4 font-normal cursor-pointer"
-          type="submit"
-        >
-          Lưu
-        </Button>
       </div>
     </div>
   );

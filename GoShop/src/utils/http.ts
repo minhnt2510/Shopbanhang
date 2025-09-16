@@ -1,6 +1,11 @@
 import axios, { AxiosError, HttpStatusCode, type AxiosInstance } from "axios";
 import { toast } from "react-toastify";
-import { clearLS, getAccessTokenFromLS, saveAccesTokenToLS } from "./auth";
+import {
+  clearLS,
+  getAccessTokenFromLS,
+  saveAccesTokenToLS,
+  setProfileToLS,
+} from "./auth";
 import type { AuthResponse } from "../Types/auth.type";
 import config from "../constants/Config";
 
@@ -38,6 +43,10 @@ class Http {
           this.accessToken = authResponse?.data?.access_token || "";
 
           saveAccesTokenToLS(this.accessToken);
+
+          if (authResponse?.data?.user) {
+            setProfileToLS(authResponse.data.user); // ✅ lưu profile
+          }
         } else if (url === "/logout") {
           this.accessToken = "";
           clearLS();

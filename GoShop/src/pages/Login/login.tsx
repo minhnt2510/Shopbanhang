@@ -8,12 +8,13 @@ import type { ResponseAPI } from "../../Types/util.type";
 import { useContext } from "react";
 import { AppContext } from "../../Context/app.context";
 import { loginAccount } from "../../api/auth.api";
+import { saveAccesTokenToLS, setProfileToLS } from "../../utils/auth";
 
 type FormData = Pick<Schema, "email" | "password">;
 const loginSchema = schema.pick(["email", "password"]);
 
 const Login = () => {
-  const { setIsAuthenticated } = useContext(AppContext);
+  const { setIsAuthenticated, setProfile } = useContext(AppContext);
   const navigate = useNavigate();
 
   const {
@@ -28,10 +29,14 @@ const Login = () => {
   // --- Mutation đăng nhập ---
   const loginAccountMutation = useMutation({
     mutationFn: (body: FormData) => loginAccount(body),
-    onSuccess: (data) => {
-      console.log("Đăng nhập thành công:", data);
-      // Có thể redirect hoặc lưu token vào localStorage/context
-      setIsAuthenticated(true);
+    onSuccess: (payload) => {
+      const { access_token, user } = payload.data; // payload là AuthResponse
+      if (access_token) saveAccesTokenToLS(access_token);
+      if (user) {
+        setProfile(user);
+        setProfileToLS(user);
+      }
+      setIsAuthenticated(Boolean(access_token));
       navigate("/");
     },
     onError: (error: unknown) => {

@@ -1,4 +1,4 @@
-import { Search, ShoppingCart, Menu, Heart, Bell } from "lucide-react";
+import { Search, ShoppingCart, Heart, Bell } from "lucide-react";
 import { createSearchParams, Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AppContext } from "../../Context/app.context";
@@ -169,7 +169,7 @@ const Header = () => {
               <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5 group-focus-within:text-blue-500 transition-colors duration-200" />
               <Input
                 placeholder="Tìm kiếm sản phẩm, thương hiệu..."
-                className="pl-14 pr-24 py-4 w-full border-0 bg-white/95 backdrop-blur-sm shadow-lg rounded-2xl text-slate-700 placeholder:text-slate-400 focus:ring-2 focus:ring-blue-500/50 focus:shadow-xl transition-all duration-300"
+                className="pl-14 pr-24 py-4 w-full border-0 bg-white/95 backdrop-blur-sm shadow-lg rounded-2xl text-slate-700 placeholder:text-slate-400 focus:ring-2 focus:ring-gray-300 focus:shadow-xl transition-all duration-300"
                 {...register("name")}
               />
               <Button className="absolute right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl px-6 py-2.5 font-semibold shadow-lg hover:shadow-orange-500/25 transition-all duration-300 hover:scale-105">
@@ -310,34 +310,6 @@ const Header = () => {
                 </Popover>
               )}
             </div>
-          </div>
-        </div>
-
-        {/* nav */}
-        <div className="bg-slate-900/80 backdrop-blur-sm py-3 border-t border-slate-700/50">
-          <div className="container mx-auto flex items-center px-6 space-x-8">
-            <Button className="bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 border border-white/20 rounded-xl px-4 py-2.5 flex items-center font-semibold transition-all duration-300 hover:scale-105">
-              <Menu className="w-4 h-4 mr-2" />
-              Danh mục
-            </Button>
-            <nav className="flex space-x-8 text-sm">
-              {[
-                "Điện thoại",
-                "Laptop",
-                "Thời trang",
-                "Gia dụng",
-                "Khuyến mãi",
-              ].map((item) => (
-                <a
-                  key={item}
-                  href="#"
-                  className="text-slate-200 hover:text-white font-medium transition-all duration-300 hover:scale-105 relative group"
-                >
-                  {item}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-400 group-hover:w-full transition-all duration-300"></span>
-                </a>
-              ))}
-            </nav>
           </div>
         </div>
       </div>

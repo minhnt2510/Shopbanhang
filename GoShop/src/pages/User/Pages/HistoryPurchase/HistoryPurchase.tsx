@@ -48,12 +48,16 @@ const HistoryPurchase = () => {
   ));
 
   return (
-    <div>
+    <div className="min-h-[500px]">
       <div className="overflow-x-auto">
         <div className="min-w-[700px]">
-          <div className="sticky top-0 flex rounded-t-sm shadow-sm">
-            {purchaseTabsLink}
-          </div>
+          {/* chỉ hiển thị nav khi có dữ liệu */}
+          {purchasesInCart && purchasesInCart.length > 0 && (
+            <div className="sticky top-0 flex rounded-t-sm shadow-sm">
+              {purchaseTabsLink}
+            </div>
+          )}
+
           <div>
             {purchasesInCart?.map((purchase) => (
               <div

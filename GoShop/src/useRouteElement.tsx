@@ -23,7 +23,7 @@ const Cart = lazy(() => import("./pages/Cart"));
 const HistoryPurchase = lazy(
   () => import("./pages/User/Pages/HistoryPurchase")
 );
-const ChangePassword = lazy(() => import("./pages/Login"));
+const ChangePassword = lazy(() => import("./pages/User/Pages/ChangePassword"));
 const UserLayout = lazy(() => import("./pages/User/Layout/UserLayout"));
 const Profile = lazy(() => import("./pages/User/Pages/Profile"));
 const RegisterLayout = lazy(() => import("./layouts/RegisterLayout"));

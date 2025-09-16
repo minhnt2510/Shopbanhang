@@ -1,6 +1,5 @@
 import axios, { AxiosError, HttpStatusCode } from "axios";
 import config from "../constants/Config";
-import userImage from "../assets/user.svg";
 
 export function isAxiosError<T>(error: unknown): error is AxiosError<T> {
   return axios.isAxiosError(error);
@@ -46,11 +45,10 @@ export const getIdFromNameId = (nameId: string) => {
 };
 
 export const getAvatarURL = (avatarName?: string) => {
-  if (!avatarName)
+  if (!avatarName) {
     return "https://via.placeholder.com/150x150/cccccc/ffffff?text=U";
+  }
   return avatarName.startsWith("http")
     ? avatarName
-    : `${config.baseURL}images/${avatarName}`;
-  // Trong utils/util.js
+    : `${config.baseURL}uploads/${avatarName}`;
 };
-console.log("userImage:", userImage); // Xem userImage là gì

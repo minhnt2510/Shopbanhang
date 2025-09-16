@@ -6,7 +6,7 @@ export default function Button({
   return (
     <button
       {...props}
-      className={`px-4 py-2 rounded font-medium hover:opacity-90 ${
+      className={`px-4 py-2 cursor-pointer rounded font-medium hover:opacity-90 ${
         className || ""
       }`}
     >
