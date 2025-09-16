@@ -9,12 +9,13 @@ import { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { registerAccount } from "../../api/auth.api";
 import { AppContext } from "../../Context/app.context";
+import { saveAccesTokenToLS, setProfileToLS } from "../../utils/auth";
 
 type FormData = Pick<Schema, "email" | "password" | "confirmPassword">;
 const registerSchema = schema.pick(["email", "password", "confirmPassword"]);
 
 const Register = () => {
-  const { setIsAuthenticated } = useContext(AppContext);
+  const { setIsAuthenticated, setProfile } = useContext(AppContext);
   const navigate = useNavigate();
 
   const {
@@ -31,11 +32,17 @@ const Register = () => {
   const registerAccountMutation = useMutation({
     mutationFn: (body: Omit<FormData, "confirmPassword">) =>
       registerAccount(body),
-    onSuccess: (data) => {
-      console.log("Đăng ký thành công:", data);
+    onSuccess: (payload) => {
+      const { access_token, user } = payload;
+      if (access_token) saveAccesTokenToLS(access_token);
+      if (user) {
+        setProfile(user);
+        setProfileToLS(user);
+      }
       setIsAuthenticated(true);
       navigate("/");
     },
+
     onError: (error: unknown) => {
       if (
         isAxiosUnprocessableEntityError<
