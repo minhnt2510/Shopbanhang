@@ -17,7 +17,6 @@ import { purchasesStatus } from "../../constants/purchase";
 import path from "../../constants/path";
 import Button from "../Button";
 import { useTranslation } from "react-i18next";
-import { locales } from "../../i18n/i18n";
 
 type FormData = Pick<Schema, "name">;
 
@@ -27,7 +26,6 @@ const MAX_PURCHASE = 5;
 
 const Header = () => {
   const { i18n } = useTranslation();
-  const currentLanguage = locales[i18n.language as keyof typeof locales];
 
   const changeLanguage = (lng: "en" | "vi") => {
     i18n.changeLanguage(lng);
