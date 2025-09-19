@@ -45,7 +45,7 @@ const RejectedRoute = () => {
 const useRouteElement = () => {
   const routeElements = useRoutes([
     {
-      path: "/",
+      path: path.home,
       element: (
         <MainLayout>
           <Suspense>

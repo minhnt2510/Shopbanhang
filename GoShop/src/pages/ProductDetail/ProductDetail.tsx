@@ -21,6 +21,7 @@ import { purchasesStatus } from "../../constants/purchase";
 import path from "../../constants/path";
 import ProductRating from "../../components/ProductRating";
 import { AppContext } from "../../Context/app.context";
+import { Helmet } from "react-helmet-async";
 
 const ProductDetail = () => {
   const queryClient = useQueryClient();
@@ -160,6 +161,10 @@ const ProductDetail = () => {
   if (!product) return null;
   return (
     <div className="bg-gray-200 py-6">
+      <Helmet>
+        <title>{product.name} | GoShop</title>
+        <meta name="description" content={product.description} />
+      </Helmet>
       <div className="container mx-auto">
         <div className="bg-white p-4 shadow">
           <div className="grid grid-cols-12 gap-9">
@@ -169,12 +174,14 @@ const ProductDetail = () => {
                 onMouseMove={handleZoom}
                 onMouseLeave={handleRemoveZoom}
               >
-                <img
-                  src={activeImage}
-                  alt={product.name}
-                  ref={imageRef}
-                  className="absolute top-0 left-0 h-full w-full bg-white object-cover transition-transform duration-200"
-                />
+                {activeImage && (
+                  <img
+                    src={activeImage}
+                    alt={product.name}
+                    ref={imageRef}
+                    className="absolute top-0 left-0 h-full w-full bg-white object-cover transition-transform duration-200"
+                  />
+                )}
               </div>
 
               <div className="relative mt-4 grid grid-cols-5 gap-1 cursor-pointer">
@@ -254,10 +261,7 @@ const ProductDetail = () => {
                 </div>
                 <div className="mx-4 h-4 w-[1px] bg-gray-300"></div>
                 <div>
-                  <span className="">
-                    {" "}
-                    {formatNumberToSocialStyle(product.sold)}
-                  </span>
+                  <span> {formatNumberToSocialStyle(product.sold)}</span>
                   <span className="ml-1 text-gray-500">Đã bán</span>
                 </div>
               </div>
