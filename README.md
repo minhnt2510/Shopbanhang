@@ -1,7 +1,7 @@
 # 🛒 GoShop - Website Mua Sắm Trực Tuyến
 
 > **Tác giả:** Nguyễn Tấn Minh  
-> **Email:** tanminh.office182@gmail.com > **GitHub:** https://github.com/minhnt2510
+> **Email:** tanminh.office183@gmail.com > **GitHub:** https://github.com/minhnt2510
 
 GoShop là một ứng dụng web thương mại điện tử được xây dựng bằng **React + Vite + TypeScript**, với mục tiêu mang đến trải nghiệm mua sắm trực tuyến hiện đại, tiện lợi và thân thiện với người dùng.
 
