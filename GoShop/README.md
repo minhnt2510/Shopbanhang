@@ -1,69 +1,77 @@
-# React + TypeScript + Vite
+# 🛒 GoShop - Website Mua Sắm Trực Tuyến
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> **Tác giả:** Nguyễn Tấn Minh  
+> **Email:** tanminh.office182@gmail.com > **GitHub:** https://github.com/minhnt2510
 
-Currently, two official plugins are available:
+GoShop là một ứng dụng web thương mại điện tử được xây dựng bằng **React + Vite + TypeScript**, với mục tiêu mang đến trải nghiệm mua sắm trực tuyến hiện đại, tiện lợi và thân thiện với người dùng.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## 🚀 Tính năng nổi bật
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 🔑 Authentication (JWT)
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Đăng ký tài khoản
+- Đăng nhập
+- Đăng xuất
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+### 🛍️ Trang danh sách sản phẩm
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- Phân trang (Pagination)
+- Sắp xếp theo thuộc tính sản phẩm (Sort)
+- Lọc nâng cao theo nhiều thuộc tính (Filter)
+- Tìm kiếm sản phẩm
+
+### 📦 Trang chi tiết sản phẩm
+
+- Hiển thị thông tin chi tiết sản phẩm
+- Hình ảnh dạng **slider + hover zoom effect**
+- Mô tả sản phẩm dạng **WYSIWYG HTML Rich Text**
+- Chức năng mua hàng trực tiếp
+
+### 🛒 Giỏ hàng
+
+- Quản lý đơn hàng: **Thêm / Sửa / Xóa sản phẩm**
+- Thực hiện đặt hàng
+
+### 👤 Quản lý Profile khách hàng
+
+- Cập nhật thông tin cá nhân
+- Upload Avatar
+- Đổi mật khẩu
+- Theo dõi tình trạng đơn hàng
+
+---
+
+## 🛠️ Công nghệ sử dụng
+
+- **UI / CSS:** TailwindCSS + HeadlessUI
+- **State Management:** React Query (async state) + React Context (state thường)
+- **Form Management:** React Hook Form
+- **Routing:** React Router
+- **Build Tool:** Vite
+- **API:** REST API
+- **Đa ngôn ngữ:** react.i18next
+- **SEO:** React Helmet
+- **Storybook:** Mô hình hóa và demo component
+- **Unit Test:** Vitest
+
+---
+
+## ⚙️ Cài đặt dự án
+
+### 1. Clone project
+
+```bash
+git clone https://github.com/minhnt2510/Shopbanhang.git
+cd GoShop
+npm install
+npm run dev
+
+![alt text](image.png)
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+📜 License
+Dự án được phát triển với mục đích học tập và nghiên cứu.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+...
