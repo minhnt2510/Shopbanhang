@@ -67,13 +67,7 @@ git clone https://github.com/minhnt2510/Shopbanhang.git
 cd GoShop
 npm install
 npm run dev
-
-![alt text](image.png)
 ```
 
 📜 License
 Dự án được phát triển với mục đích học tập và nghiên cứu.
-
-```
-
-```
