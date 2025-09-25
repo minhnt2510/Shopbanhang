@@ -21,7 +21,6 @@ import { purchasesStatus } from "../../constants/purchase";
 import path from "../../constants/path";
 import ProductRating from "../../components/ProductRating";
 import { AppContext } from "../../Context/app.context";
-import { Helmet } from "react-helmet-async";
 
 const ProductDetail = () => {
   const queryClient = useQueryClient();
@@ -161,10 +160,6 @@ const ProductDetail = () => {
   if (!product) return null;
   return (
     <div className="bg-gray-200 py-6">
-      <Helmet>
-        <title>{product.name} | GoShop</title>
-        <meta name="description" content={product.description} />
-      </Helmet>
       <div className="container mx-auto">
         <div className="bg-white p-4 shadow">
           <div className="grid grid-cols-12 gap-9">

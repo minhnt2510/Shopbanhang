@@ -9,7 +9,6 @@ import { useContext } from "react";
 import { AppContext } from "../../Context/app.context";
 import { loginAccount } from "../../api/auth.api";
 import { saveAccesTokenToLS, setProfileToLS } from "../../utils/auth";
-import { Helmet } from "react-helmet-async";
 
 type FormData = Pick<Schema, "email" | "password">;
 const loginSchema = schema.pick(["email", "password"]);
@@ -68,13 +67,6 @@ const Login = () => {
 
   return (
     <div className="bg-gray-200 min-h-screen py-12">
-      <Helmet>
-        <title>Đăng nhập | GoShop</title>
-        <meta
-          name="description"
-          content="Đăng nhập để trải nghiệm tốt nhất nhé ! "
-        />
-      </Helmet>
       <div className="max-w-7xl mx-auto px-4">
         <div className="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
           <div className="text-center mb-6">

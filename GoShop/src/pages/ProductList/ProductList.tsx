@@ -8,8 +8,6 @@ import SortProductList from "./SoftProductList";
 import Paginate from "../../components/Paginate";
 import categoryApi from "../../api/category.api";
 import useQueryConfig from "../../hooks/useQueryConfig";
-import { Helmet } from "react-helmet-async";
-
 export default function ProductList() {
   // lấy query từ url
   const [page, setPage] = useState(1);
@@ -36,13 +34,6 @@ export default function ProductList() {
 
   return (
     <div className="bg-gray-200 py-6">
-      <Helmet>
-        <title>Trang chủ | GoShop</title>
-        <meta
-          name="description"
-          content="Dưới đây là mô tả trang chủ của GoShop, một website thương mại điện tử giả định, tập trung vào trải nghiệm mua sắm trực tuyến tiện lợi, hiện đại và thân thiện với người dùng tại Việt Nam."
-        />
-      </Helmet>
       <div className="container mx-auto">
         <div className="grid grid-cols-12 gap-6">
           {/* AsideFilter */}

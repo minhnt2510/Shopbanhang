@@ -10,7 +10,6 @@ import { useForm } from "react-hook-form";
 import { registerAccount } from "../../api/auth.api";
 import { AppContext } from "../../Context/app.context";
 import { saveAccesTokenToLS, setProfileToLS } from "../../utils/auth";
-import { Helmet } from "react-helmet-async";
 
 type FormData = Pick<Schema, "email" | "password" | "confirmPassword">;
 const registerSchema = schema.pick(["email", "password", "confirmPassword"]);
@@ -75,13 +74,6 @@ const Register = () => {
   return (
     <div className="bg-gray-200 min-h-screen py-12">
       <div className="max-w-7xl mx-auto px-4">
-        <Helmet>
-          <title>Đăng ký | GoShop</title>
-          <meta
-            name="description"
-            content="Đăng ký tài khoản để đăng nhập và sử dụng thêm nhiều chức năng của dự án cho phép đăng nhập"
-          />
-        </Helmet>
         <div className="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
           <div className="text-center mb-6">
             <h1 className="text-2xl font-bold text-gray-900">GoShop</h1>
