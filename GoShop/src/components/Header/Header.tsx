@@ -24,10 +24,8 @@ const nameSchema = schema.pick(["name"]);
 const MAX_PURCHASE = 5;
 
 const Header = () => {
-  // chỉ lấy t() nếu bạn cần dịch key; việc đổi ngôn ngữ dùng instance
   useTranslation();
 
-  // giữ ngôn ngữ hiện tại trong state, và update khi i18n đổi
   const [currentLang, setCurrentLang] = useState<string>(
     i18nInstance.language || "vi"
   );
@@ -53,7 +51,7 @@ const Header = () => {
   const queryConfig = useQueryConfig();
 
   // form search
-  const { register, handleSubmit } = useForm<FormData>({
+  const { register, handleSubmit, reset } = useForm<FormData>({
     defaultValues: { name: "" },
     resolver: yupResolver(nameSchema),
   });
@@ -72,11 +70,12 @@ const Header = () => {
 
   // search submit
   const navigate = useNavigate();
+
   const onSubmitSearch = handleSubmit((data) => {
     navigate({
       pathname: "/",
       search: createSearchParams(
-        omit({ ...queryConfig, name: data.name }).toString() as any
+        omit({ ...queryConfig, name: data.name })
       ).toString(),
     });
   });
@@ -154,7 +153,11 @@ const Header = () => {
       <div className="py-4 sm:py-6">
         <div className="container mx-auto flex items-center justify-between px-4 sm:px-6 gap-4 sm:gap-8">
           {/* logo */}
-          <Link to="/" className="flex items-center space-x-2 sm:space-x-3">
+          <Link
+            to="/"
+            onClick={() => reset()}
+            className="flex items-center space-x-2 sm:space-x-3"
+          >
             <h1 className="text-2xl sm:text-3xl font-bold text-black tracking-tight">
               Go<span className="text-black">Shop</span>
             </h1>
@@ -167,12 +170,12 @@ const Header = () => {
           >
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
             <Input
-              placeholder={isVi ? "Tìm kiếm sản phẩm, thương hiệu..." : "Search products, brands..."}
+              placeholder="Tìm kiếm sản phẩm, thương hiệu..."
               className="pl-12 pr-20 py-3 w-full border border-gray-300 rounded-xl text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-black"
               {...register("name")}
             />
             <Button className="absolute right-2 top-1/2 -translate-y-1/2 bg-black hover:bg-gray-800 text-white rounded-lg px-4 py-2 font-semibold transition">
-              {isVi ? "Tìm" : "Search"}
+              Tìm
             </Button>
           </form>
 
@@ -188,29 +191,31 @@ const Header = () => {
                         {isVi ? "Giỏ hàng" : "Cart"}
                       </h3>
                       <div className="space-y-2 max-h-60 overflow-y-auto">
-                        {purchasesInCart.slice(0, MAX_PURCHASE).map((item: any) => (
-                          <div
-                            key={item._id}
-                            className="flex items-center gap-3 p-2 rounded-md hover:bg-gray-50 transition"
-                          >
-                            <img
-                              src={item.product.image}
-                              alt={item.product.name}
-                              className="w-12 h-12 object-cover rounded"
-                            />
-                            <div className="flex-1">
-                              <p className="text-sm font-medium text-gray-900 truncate">
-                                {item.product.name}
-                              </p>
-                              <p className="text-xs text-gray-600">
-                                {item.buy_count} ×{" "}
-                                <span className="text-black font-semibold">
-                                  {formatCurrency(item.price)}đ
-                                </span>
-                              </p>
+                        {purchasesInCart
+                          .slice(0, MAX_PURCHASE)
+                          .map((item: any) => (
+                            <div
+                              key={item._id}
+                              className="flex items-center gap-3 p-2 rounded-md hover:bg-gray-50 transition"
+                            >
+                              <img
+                                src={item.product.image}
+                                alt={item.product.name}
+                                className="w-12 h-12 object-cover rounded"
+                              />
+                              <div className="flex-1">
+                                <p className="text-sm font-medium text-gray-900 truncate">
+                                  {item.product.name}
+                                </p>
+                                <p className="text-xs text-gray-600">
+                                  {item.buy_count} ×{" "}
+                                  <span className="text-black font-semibold">
+                                    {formatCurrency(item.price)}đ
+                                  </span>
+                                </p>
+                              </div>
                             </div>
-                          </div>
-                        ))}
+                          ))}
                       </div>
                       <Link
                         to={path.cart}
@@ -276,7 +281,11 @@ const Header = () => {
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="p-2 text-gray-800 hover:bg-gray-100 rounded-lg transition"
             >
-              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {isMenuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
             </button>
           </div>
         </div>

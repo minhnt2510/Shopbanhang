@@ -12,13 +12,11 @@ import { Menu, X } from "lucide-react";
 
 export default function ProductList() {
   // lấy query từ url
+  const queryConfig = useQueryConfig();
   const [page, setPage] = useState(1);
 
   // state cho mobile filter menu
   const [showFilter, setShowFilter] = useState(false);
-
-  // config query để truyền vào API
-  const queryConfig = useQueryConfig();
 
   // gọi API với react-query
   const { data: productData } = useQuery({
@@ -79,7 +77,7 @@ export default function ProductList() {
             <Paginate
               page={page}
               setPage={setPage}
-              pageSize={7}
+              pageSize={pageSize}
               queryConfig={queryConfig}
             />
           </div>

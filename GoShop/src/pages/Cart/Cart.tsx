@@ -329,7 +329,7 @@ export default function Cart() {
               <Button
                 onClick={handleBuyPruchase}
                 disabled={buyProductMutation.isPending}
-                className="flex h-10 w-full sm:w-52 items-center justify-center bg-red-500 text-sm uppercase text-white hover:bg-red-600 rounded"
+                className="flex h-10 w-full sm:w-52 items-center justify-center bg-black text-sm uppercase text-white hover:bg-red-600 rounded"
               >
                 Mua hàng
               </Button>
@@ -342,7 +342,7 @@ export default function Cart() {
             Giỏ hàng của bạn chưa có sản phẩm
           </div>
           <Link to={path.home} className="mt-6 inline-block">
-            <button className="bg-orange-500 text-white text-lg px-6 py-3 shadow rounded-2xl hover:bg-orange-600">
+            <button className="bg-black text-white text-lg px-6 py-3 shadow rounded-2xl hover:bg-gray-600">
               Mua Ngay
             </button>
           </Link>

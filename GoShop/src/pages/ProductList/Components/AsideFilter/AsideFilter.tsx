@@ -28,6 +28,7 @@ const AsideFilter = ({ categories, queryConfig }: Props) => {
     watch,
     trigger,
     formState: { errors },
+    reset,
   } = useForm<FormData>({
     defaultValues: {
       price_min: "",
@@ -202,7 +203,10 @@ const AsideFilter = ({ categories, queryConfig }: Props) => {
 
       {/* Xóa tất cả */}
       <Button
-        onClick={handleRemoveAll}
+        onClick={() => {
+          handleRemoveAll();
+          reset();
+        }}
         className="bg-black hover:bg-gray-600 mt-3 w-full cursor-pointer h-10 rounded-2xl text-white uppercase"
       >
         xóa tất cả
