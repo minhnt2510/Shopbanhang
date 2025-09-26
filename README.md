@@ -2,7 +2,7 @@
 
 ## 📷 Giao diện chính
 
-![Giao diện chính](public/screenshot.png)
+![Giao diện chính](https://raw.githubusercontent.com/minhnt2510/Shopbanhang/main/public/screenshot.png)
 
 > **Tác giả:** Nguyễn Tấn Minh  
 > **Email:** tanminh.office183@gmail.com > **GitHub:** https://github.com/minhnt2510
