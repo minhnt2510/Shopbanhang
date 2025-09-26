@@ -92,7 +92,7 @@ const Paginate = ({ page, setPage, pageSize, queryConfig }: Props) => {
             className={classNames(
               "mx-2 rounded border bg-white px-3 py-2 shadow-sm",
               {
-                "border-cyan-500": pageNumber === page,
+                "border-gray-500": pageNumber === page,
                 "border-transparent": pageNumber !== page,
               }
             )}

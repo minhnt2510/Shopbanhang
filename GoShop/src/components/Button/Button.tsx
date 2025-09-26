@@ -6,11 +6,12 @@ export default function Button({
   return (
     <button
       {...props}
-      className={`px-3 sm:px-4 py-2 text-sm sm:text-base 
-    cursor-pointer font-medium hover:opacity-90 
-    flex items-center justify-center whitespace-nowrap leading-none
-    rounded-full
-    ${className || ""}`}
+      className={`px-4 sm:px-6 py-2 text-sm sm:text-base
+      font-medium text-white bg-black hover:bg-gray-800
+      inline-flex items-center justify-center 
+      whitespace-nowrap text-center leading-none
+      rounded-full transition-colors duration-200
+      ${className || ""}`}
     >
       {children}
     </button>

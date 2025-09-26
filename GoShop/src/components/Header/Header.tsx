@@ -1,7 +1,6 @@
-import { Search, ShoppingCart, Heart, Bell, Menu, X } from "lucide-react";
+import { Search, ShoppingCart, Menu, X } from "lucide-react";
 import { createSearchParams, Link, useNavigate } from "react-router-dom";
-import { useContext, useState } from "react";
-import { AppContext } from "../../Context/app.context";
+import { useContext, useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { logout } from "../../api/auth.api";
 import Input from "../Input";
@@ -17,18 +16,34 @@ import { purchasesStatus } from "../../constants/purchase";
 import path from "../../constants/path";
 import Button from "../Button";
 import { useTranslation } from "react-i18next";
-import { locales } from "../../i18n/i18n";
+import { AppContext } from "../../Context/app.context";
+import i18nInstance from "../../i18n/i18n"; // ✅ import đúng instance i18n đã init
 
 type FormData = Pick<Schema, "name">;
 const nameSchema = schema.pick(["name"]);
 const MAX_PURCHASE = 5;
 
 const Header = () => {
-  const { i18n } = useTranslation();
-  locales[i18n.language as keyof typeof locales];
+  // chỉ lấy t() nếu bạn cần dịch key; việc đổi ngôn ngữ dùng instance
+  useTranslation();
 
-  const changeLanguage = (lng: "en" | "vi") => {
-    i18n.changeLanguage(lng);
+  // giữ ngôn ngữ hiện tại trong state, và update khi i18n đổi
+  const [currentLang, setCurrentLang] = useState<string>(
+    i18nInstance.language || "vi"
+  );
+  useEffect(() => {
+    const handler = (lng: string) => setCurrentLang(lng);
+    i18nInstance.on("languageChanged", handler);
+    return () => {
+      i18nInstance.off("languageChanged", handler);
+    };
+  }, []);
+
+  const isVi = currentLang.startsWith("vi");
+  const changeLanguage = (lng: "vi" | "en") => {
+    if (!currentLang.startsWith(lng)) {
+      i18nInstance.changeLanguage(lng).catch(console.error);
+    }
   };
 
   const { profile, isAuthenticated, setIsAuthenticated } =
@@ -37,11 +52,13 @@ const Header = () => {
   const queryClient = useQueryClient();
   const queryConfig = useQueryConfig();
 
+  // form search
   const { register, handleSubmit } = useForm<FormData>({
     defaultValues: { name: "" },
     resolver: yupResolver(nameSchema),
   });
 
+  // logout
   const logoutMutation = useMutation({
     mutationFn: logout,
     onSuccess: () => {
@@ -51,69 +68,62 @@ const Header = () => {
       });
     },
   });
+  const handleLogout = () => logoutMutation.mutate();
 
-  const handleLogout = () => {
-    logoutMutation.mutate();
-  };
-
+  // search submit
   const navigate = useNavigate();
-
   const onSubmitSearch = handleSubmit((data) => {
     navigate({
       pathname: "/",
       search: createSearchParams(
-        omit({ ...queryConfig, name: data.name })
+        omit({ ...queryConfig, name: data.name }).toString() as any
       ).toString(),
     });
   });
 
-  // khi chuyen trang thi header chi bi re-render chu kh bi unmount
+  // giỏ hàng
   const { data: purchasesInCartData } = useQuery({
     queryKey: ["purchases", { status: purchasesStatus.inCart }],
     queryFn: () => purchaseApi.getPurchases({ status: purchasesStatus.inCart }),
     enabled: isAuthenticated,
   });
-
   const purchasesInCart = purchasesInCartData?.data.data;
 
-  // state cho mobile menu
+  // menu mobile
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <div className="relative bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 shadow-xl border-b border-slate-700">
+    <header className="relative bg-white shadow-md border-b border-gray-200">
       {/* top bar */}
-      <div className="bg-slate-950/50 py-2 text-sm text-slate-300 backdrop-blur-sm">
+      <div className="bg-gray-50 py-2 text-sm text-gray-600">
         <div className="container mx-auto flex justify-between items-center px-4 sm:px-6">
-          <span className="flex items-center gap-2">
-            <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-            {i18n.language === "vi"
+          <span>
+            {isVi
               ? "Miễn phí vận chuyển cho đơn hàng trên 500k"
               : "Free shipping for orders over 500k"}
           </span>
           <div className="flex items-center space-x-4 sm:space-x-6">
-            <span className="hidden sm:flex items-center gap-2">
-              <span className="w-1.5 h-1.5 bg-blue-400 rounded-full"></span>
-              Hotline: 1900-1234
-            </span>
+            <span className="hidden sm:block">Hotline: 1900-1234</span>
 
-            {/* Chọn ngôn ngữ */}
+            {/* language switch */}
             <div className="flex items-center space-x-2">
               <button
                 onClick={() => changeLanguage("vi")}
-                className={`px-2 py-1 rounded-md text-xs font-semibold transition-all duration-300 ${
-                  i18n.language === "vi"
-                    ? "bg-blue-600 text-white"
-                    : "bg-slate-700 text-slate-300 hover:bg-slate-600"
+                className={`px-2 py-1 rounded-md text-xs font-semibold transition ${
+                  isVi
+                    ? "bg-black text-white"
+                    : "bg-gray-200 text-gray-800 hover:bg-gray-300"
                 }`}
               >
                 VI
               </button>
+
               <button
                 onClick={() => changeLanguage("en")}
-                className={`px-2 py-1 rounded-md text-xs font-semibold transition-all duration-300 ${
-                  i18n.language === "en"
-                    ? "bg-blue-600 text-white"
-                    : "bg-slate-700 text-slate-300 hover:bg-slate-600"
+                className={`px-2 py-1 rounded-md text-xs font-semibold transition ${
+                  !isVi
+                    ? "bg-black text-white"
+                    : "bg-gray-200 text-gray-800 hover:bg-gray-300"
                 }`}
               >
                 EN
@@ -124,15 +134,15 @@ const Header = () => {
               <>
                 <Link
                   to="/login"
-                  className="hover:text-blue-300 transition-all duration-300 hover:scale-105 font-medium"
+                  className="text-gray-800 hover:text-blue-600 font-medium transition"
                 >
-                  {i18n.language === "vi" ? "Đăng nhập" : "Login"}
+                  {isVi ? "Đăng nhập" : "Login"}
                 </Link>
                 <Link
                   to="/register"
-                  className="hover:text-blue-300 transition-all duration-300 hover:scale-105 font-medium"
+                  className="text-gray-800 hover:text-blue-600 font-medium transition"
                 >
-                  {i18n.language === "vi" ? "Đăng ký" : "Register"}
+                  {isVi ? "Đăng ký" : "Register"}
                 </Link>
               </>
             )}
@@ -144,230 +154,194 @@ const Header = () => {
       <div className="py-4 sm:py-6">
         <div className="container mx-auto flex items-center justify-between px-4 sm:px-6 gap-4 sm:gap-8">
           {/* logo */}
-          <Link to="/">
-            <div className="flex items-center space-x-3 sm:space-x-4 group">
-              <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-2 sm:p-3 shadow-lg group-hover:shadow-blue-500/25 transition-all duration-300 group-hover:scale-105">
-                <h1 className="text-xl sm:text-2xl font-bold text-white">Go</h1>
-              </div>
-              <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-                  Shop
-                </h1>
-                <p className="hidden sm:block text-sm text-slate-300 font-medium">
-                  Mua sắm thông minh
-                </p>
-              </div>
-            </div>
+          <Link to="/" className="flex items-center space-x-2 sm:space-x-3">
+            <h1 className="text-2xl sm:text-3xl font-bold text-black tracking-tight">
+              Go<span className="text-black">Shop</span>
+            </h1>
           </Link>
 
           {/* search */}
           <form
             onSubmit={onSubmitSearch}
-            className="flex-1 w-full max-w-md sm:max-w-3xl mx-2 sm:mx-4 md:mx-8 relative group"
+            className="flex-1 w-full max-w-md sm:max-w-2xl mx-4 relative"
           >
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5 group-focus-within:text-blue-500 transition-colors duration-200" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
             <Input
-              placeholder="Tìm kiếm sản phẩm, thương hiệu..."
-              className="pl-12 pr-20 py-3 sm:py-4 w-full border-0 bg-white/95 backdrop-blur-sm shadow-lg rounded-2xl text-slate-700 placeholder:text-slate-400 focus:ring-2 focus:ring-gray-300 focus:shadow-xl transition-all duration-300"
+              placeholder={isVi ? "Tìm kiếm sản phẩm, thương hiệu..." : "Search products, brands..."}
+              className="pl-12 pr-20 py-3 w-full border border-gray-300 rounded-xl text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-black"
               {...register("name")}
             />
-            <Button className="absolute right-2 top-1/2 -translate-y-1/2 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white rounded-xl px-4 sm:px-6 py-2 sm:py-2.5 font-semibold shadow-lg hover:shadow-orange-500/25 transition-all duration-300 hover:scale-105">
-              Tìm
+            <Button className="absolute right-2 top-1/2 -translate-y-1/2 bg-black hover:bg-gray-800 text-white rounded-lg px-4 py-2 font-semibold transition">
+              {isVi ? "Tìm" : "Search"}
             </Button>
           </form>
 
           {/* actions desktop */}
-          <div className="hidden md:flex items-center space-x-3">
-            <Button className="relative bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 border border-white/20 rounded-xl p-3 transition-all duration-300 hover:scale-110 hover:shadow-lg">
-              <Heart className="w-5 h-5" />
-              <span className="absolute -top-2 -right-2 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold shadow-lg">
-                2
-              </span>
-            </Button>
-
-            <Button className="relative bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 border border-white/20 rounded-xl p-3 transition-all duration-300 hover:scale-110 hover:shadow-lg">
-              <Bell className="w-5 h-5" />
-              <span className="absolute -top-2 -right-2 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold shadow-lg animate-pulse">
-                5
-              </span>
-            </Button>
-
+          <div className="hidden md:flex items-center space-x-4">
             {/* giỏ hàng */}
             <Popover
               renderPopover={
-                <div className="w-96 p-6 bg-white rounded-2xl shadow-2xl border border-slate-200">
+                <div className="w-80 bg-white rounded-lg shadow-lg border border-gray-300 p-4">
                   {purchasesInCart && purchasesInCart.length > 0 ? (
                     <>
-                      <h3 className="font-bold mb-4 text-xl text-slate-800 border-b border-slate-100 pb-3">
-                        Giỏ hàng của bạn
+                      <h3 className="font-bold mb-3 text-gray-900">
+                        {isVi ? "Giỏ hàng" : "Cart"}
                       </h3>
-                      <div className="space-y-4 max-h-80 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-slate-300">
-                        {purchasesInCart
-                          .slice(0, MAX_PURCHASE)
-                          .map((purchase) => (
-                            <div
-                              key={purchase._id}
-                              className="flex items-center space-x-4 p-3 rounded-xl hover:bg-slate-50 transition-colors duration-200"
-                            >
-                              <div className="w-16 h-16 flex-shrink-0">
-                                <img
-                                  src={
-                                    purchase.product.image || "/placeholder.svg"
-                                  }
-                                  alt={purchase.product.name}
-                                  className="w-full h-full object-cover rounded-xl shadow-md"
-                                />
-                              </div>
-                              <div className="flex-1 overflow-hidden">
-                                <p className="text-sm font-semibold text-slate-800 truncate mb-1">
-                                  {purchase.product.name}
-                                </p>
-                                <p className="text-sm text-slate-500 font-medium">
-                                  {purchase.buy_count} x{" "}
-                                  <span className="text-blue-600 font-bold">
-                                    {formatCurrency(purchase.price)}đ
-                                  </span>
-                                </p>
-                              </div>
+                      <div className="space-y-2 max-h-60 overflow-y-auto">
+                        {purchasesInCart.slice(0, MAX_PURCHASE).map((item: any) => (
+                          <div
+                            key={item._id}
+                            className="flex items-center gap-3 p-2 rounded-md hover:bg-gray-50 transition"
+                          >
+                            <img
+                              src={item.product.image}
+                              alt={item.product.name}
+                              className="w-12 h-12 object-cover rounded"
+                            />
+                            <div className="flex-1">
+                              <p className="text-sm font-medium text-gray-900 truncate">
+                                {item.product.name}
+                              </p>
+                              <p className="text-xs text-gray-600">
+                                {item.buy_count} ×{" "}
+                                <span className="text-black font-semibold">
+                                  {formatCurrency(item.price)}đ
+                                </span>
+                              </p>
                             </div>
-                          ))}
+                          </div>
+                        ))}
                       </div>
-                      <div className="flex items-center text-center gap-3 mt-6 pt-4 border-t border-slate-100">
-                        <Link
-                          to={path.cart}
-                          className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl py-3 font-semibold transition-all duration-300 hover:scale-105"
-                        >
-                          Xem giỏ hàng
-                        </Link>
-                        <div className="flex-1 items-center text-center cursor-pointer bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-xl py-3 font-semibold shadow-lg hover:shadow-blue-500/25 transition-all duration-300 hover:scale-105">
-                          {purchasesInCart.length > MAX_PURCHASE
-                            ? purchasesInCart.length - MAX_PURCHASE
-                            : ""}{" "}
-                          Thêm hàng vào giỏ
-                        </div>
-                      </div>
+                      <Link
+                        to={path.cart}
+                        className="block mt-4 text-center bg-black hover:bg-gray-800 text-white font-semibold rounded-lg py-2 transition"
+                      >
+                        {isVi ? "Xem giỏ hàng" : "View cart"}
+                      </Link>
                     </>
                   ) : (
-                    <div className="text-center text-slate-500 py-12">
-                      <ShoppingCart className="w-16 h-16 mx-auto mb-4 text-slate-300" />
-                      <p className="text-lg font-medium">Giỏ hàng trống</p>
-                    </div>
+                    <p className="text-gray-500 text-center py-6">
+                      {isVi ? "Giỏ hàng trống" : "Your cart is empty"}
+                    </p>
                   )}
                 </div>
               }
             >
-              <Button className="relative bg-white/10 backdrop-blur-sm text-white hover:bg-white/20 border border-white/20 rounded-xl p-3 transition-all duration-300 hover:scale-110 hover:shadow-lg">
-                <ShoppingCart className="w-5 h-5" />
+              <button className="relative p-3 border border-gray-300 rounded-lg hover:bg-gray-100 transition">
+                <ShoppingCart className="w-5 h-5 text-gray-800" />
                 {purchasesInCart && purchasesInCart.length > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold shadow-lg">
+                  <span className="absolute -top-2 -right-2 bg-black text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
                     {purchasesInCart.length}
                   </span>
                 )}
-              </Button>
+              </button>
             </Popover>
 
             {/* user */}
             {isAuthenticated && (
               <Popover
                 renderPopover={
-                  <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
+                  <div className="bg-white rounded-lg shadow-lg border border-gray-300 overflow-hidden">
                     <Link to={path.profile}>
-                      <button className="block w-full text-left px-6 py-4 hover:bg-slate-50 transition-colors duration-200 font-medium text-slate-700 border-b border-slate-100">
-                        Tài khoản của tôi
+                      <button className="block w-full text-left px-6 py-4 hover:bg-gray-50 transition text-gray-900">
+                        {isVi ? "Tài khoản của tôi" : "My account"}
                       </button>
                     </Link>
-                    <button className="block w-full text-left px-6 py-4 hover:bg-slate-50 transition-colors duration-200 font-medium text-slate-700 border-b border-slate-100">
-                      Đơn hàng
-                    </button>
-                    <button className="block w-full text-left px-6 py-4 hover:bg-slate-50 transition-colors duration-200 font-medium text-slate-700 border-b border-slate-100">
-                      Yêu thích
-                    </button>
                     <button
                       onClick={handleLogout}
-                      className="block w-full text-left px-6 py-4 hover:bg-red-50 transition-colors duration-200 font-medium text-red-600"
+                      className="block w-full text-left px-6 py-4 hover:bg-gray-50 transition text-red-600 font-semibold"
                     >
-                      Đăng xuất
+                      {isVi ? "Đăng xuất" : "Log out"}
                     </button>
                   </div>
                 }
               >
-                <div className="flex mr-2 h-6 w-6 flex-shrink-0">
+                <div className="flex items-center cursor-pointer">
                   <img
                     src={profile?.avatar}
                     alt="avatar"
-                    className="h-full w-full rounded-full object-cover"
+                    className="h-8 w-8 rounded-full object-cover border border-gray-200"
                   />
-                  <div className="text-white hover:text-gray-400 text-sm ml-2">
+                  <span className="ml-2 text-sm text-gray-900 hover:text-gray-600">
                     {profile?.email}
-                  </div>
+                  </span>
                 </div>
               </Popover>
             )}
           </div>
 
-          {/* mobile menu toggle */}
+          {/* mobile toggle */}
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 text-white hover:bg-white/10 rounded-lg transition"
+              className="p-2 text-gray-800 hover:bg-gray-100 rounded-lg transition"
             >
-              {isMenuOpen ? (
-                <X className="w-6 h-6" />
-              ) : (
-                <Menu className="w-6 h-6" />
-              )}
+              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
         </div>
       </div>
 
-      {/* mobile menu panel */}
+      {/* mobile menu */}
       {isMenuOpen && (
-        <div className="relative bg-slate-900 backdrop-blur-sm text-white hover:bg-white/20 border border-white/20 rounded-xl p-3 transition-all duration-300 hover:scale-110 hover:shadow-lg">
-          <div className="p-4 space-y-4">
-            {/* giỏ hàng */}
+        <div className="absolute top-full left-0 w-full bg-white shadow-lg border-t border-gray-200 md:hidden z-50">
+          <nav className="flex flex-col p-4 space-y-3">
+            <Link
+              to="/"
+              className="text-gray-800 font-medium hover:text-blue-600 transition"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              {isVi ? "Trang chủ" : "Home"}
+            </Link>
             <Link
               to={path.cart}
-              className="flex items-center justify-between py-2 border-b text-white font-medium"
+              className="text-gray-800 font-medium hover:text-blue-600 transition"
+              onClick={() => setIsMenuOpen(false)}
             >
-              <span className="text-white">Giỏ hàng</span>
-              {purchasesInCart && purchasesInCart.length > 0 && (
-                <span className="bg-blue-600 text-white text-xs rounded-full px-2 py-0.5">
-                  {purchasesInCart.length}
-                </span>
-              )}
+              {isVi ? "Giỏ hàng" : "Cart"}
             </Link>
 
-            {/* user */}
-            {isAuthenticated ? (
+            {!isAuthenticated ? (
               <>
                 <Link
-                  to={path.profile}
-                  className="block py-2 border-b text-white font-medium"
+                  to="/login"
+                  className="text-gray-800 font-medium hover:text-blue-600 transition"
+                  onClick={() => setIsMenuOpen(false)}
                 >
-                  Tài khoản của tôi
+                  {isVi ? "Đăng nhập" : "Login"}
                 </Link>
-                <button
-                  onClick={handleLogout}
-                  className="block w-full text-left py-2 text-red-600 font-medium"
+                <Link
+                  to="/register"
+                  className="text-gray-800 font-medium hover:text-blue-600 transition"
+                  onClick={() => setIsMenuOpen(false)}
                 >
-                  Đăng xuất
-                </button>
+                  {isVi ? "Đăng ký" : "Register"}
+                </Link>
               </>
             ) : (
               <>
-                <Link to="/login" className="block py-2 border-b font-medium">
-                  Đăng nhập
+                <Link
+                  to={path.profile}
+                  className="text-gray-800 font-medium hover:text-blue-600 transition"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {isVi ? "Tài khoản của tôi" : "My account"}
                 </Link>
-                <Link to="/register" className="block py-2   font-medium">
-                  Đăng ký
-                </Link>
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setIsMenuOpen(false);
+                  }}
+                  className="text-red-600 font-medium hover:text-red-700 transition text-left"
+                >
+                  {isVi ? "Đăng xuất" : "Log out"}
+                </button>
               </>
             )}
-          </div>
+          </nav>
         </div>
       )}
-    </div>
+    </header>
   );
 };
 

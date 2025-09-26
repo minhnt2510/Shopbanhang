@@ -162,220 +162,194 @@ export default function Cart() {
     }
   };
 
-  return (
-    <div className="bg-neutral-100 py-16">
-      <div className="container mx-auto">
-        {extendedPurchases.length > 0 ? (
-          <>
-            <div className="overflow-auto">
-              <div className="min-w-[1000px]">
-                {/* Header */}
-                <div className="grid grid-cols-12 items-center rounded-sm bg-white py-5 px-9 text-sm capitalize text-gray-500 shadow">
-                  <div className="col-span-6">
-                    <div className="flex items-center">
-                      <div className="flex items-center justify-center pr-3">
-                        <input
-                          type="checkbox"
-                          className="h-5 w-5 accent-orange"
-                          checked={isAllChecked}
-                          onChange={handleCheckAll}
-                        />
-                      </div>
-                      <div className="flex-grow text-black">Sản phẩm</div>
-                    </div>
-                  </div>
-                  <div className="col-span-6">
-                    <div className="grid grid-cols-5 text-center">
-                      <div className="col-span-2">Đơn giá</div>
-                      <div className="col-span-1">Số lượng</div>
-                      <div className="col-span-1">Số tiền</div>
-                      <div className="col-span-1">Thao tác</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Danh sách sản phẩm */}
-                {extendedPurchases.length > 0 && (
-                  <div className="my-3 rounded-sm bg-white p-5 shadow">
-                    {extendedPurchases.map((purchase, index) => (
-                      <div
-                        key={purchase._id}
-                        className="mb-5 grid grid-cols-12 items-center rounded-sm border border-gray-200 bg-white py-5 px-4 text-center text-sm text-gray-500 first:mt-0"
-                      >
-                        <div className="col-span-6">
-                          <div className="flex">
-                            <div className="flex flex-shrink-0 items-center justify-center pr-3">
-                              <input
-                                type="checkbox"
-                                className="h-5 w-5 accent-orange"
-                                checked={purchase.checked}
-                                onChange={handleCheck(index)}
-                              />
-                            </div>
-                            <div className="flex-grow">
-                              <div className="flex">
-                                <Link
-                                  className="h-20 w-20 flex-shrink-0"
-                                  to={`${path.home}${generateNameId({
-                                    name: purchase.product.name,
-                                    id: purchase.product._id,
-                                  })}`}
-                                >
-                                  <img
-                                    alt={purchase.product.name}
-                                    src={purchase.product.image}
-                                  />
-                                </Link>
-                                <div className="flex-grow px-2 pt-1 pb-2">
-                                  <Link
-                                    to={`${path.home}${generateNameId({
-                                      name: purchase.product.name,
-                                      id: purchase.product._id,
-                                    })}`}
-                                    className="line-clamp-2"
-                                  >
-                                    {purchase.product.name}
-                                  </Link>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Giá - số lượng - thành tiền - thao tác */}
-                        <div className="col-span-6">
-                          <div className="grid grid-cols-5 items-center">
-                            <div className="col-span-2">
-                              <div className="flex items-center justify-center">
-                                <span className="text-gray-300 line-through">
-                                  ₫
-                                  {formatCurrency(
-                                    purchase.product.price_before_discount
-                                  )}
-                                </span>
-                                <span className="ml-3">
-                                  ₫{formatCurrency(purchase.product.price)}
-                                </span>
-                              </div>
-                            </div>
-                            <div className="col-span-1">
-                              <QuantityController
-                                max={purchase.product.quantity}
-                                value={purchase.buy_count}
-                                classNameWrapper="flex items-center"
-                                onIncrease={(value) =>
-                                  handleQuantity(
-                                    index,
-                                    value,
-                                    value <= purchase.product.quantity
-                                  )
-                                }
-                                onDecrease={(value) =>
-                                  handleQuantity(index, value, value >= 1)
-                                }
-                                onType={handleTypeQuantity(index)}
-                                onFocusOut={(value) =>
-                                  handleQuantity(
-                                    index,
-                                    value,
-                                    value >= 1 &&
-                                      value <= purchase.product.quantity &&
-                                      value !==
-                                        (purchasesInCart as Purchase[])[index]
-                                          .buy_count
-                                  )
-                                }
-                                disabled={purchase.disabled}
-                              />
-                            </div>
-                            <div className="col-span-1">
-                              <span className="text-orange">
-                                ₫
-                                {formatCurrency(
-                                  purchase.product.price * purchase.buy_count
-                                )}
-                              </span>
-                            </div>
-                            <div className="col-span-1">
-                              <button
-                                onClick={handleDelete(index)}
-                                className="bg-none text-black transition-colors cursor-pointer hover:text-red-400"
-                              >
-                                Xóa
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-            <div className="sticky bottom-0 z-10 mt-8 flex flex-col rounded-sm border border-gray-100 bg-white p-5 shadow sm:flex-row sm:items-center">
-              <div className="flex items-center">
-                <div className="flex flex-shrink-0 items-center justify-center pr-3">
+ return (
+  <div className="bg-neutral-100 py-8 sm:py-16">
+    <div className="container mx-auto">
+      {extendedPurchases.length > 0 ? (
+        <>
+          <div className="overflow-auto">
+            <div className="min-w-full lg:min-w-[1000px]">
+              {/* Header - ẩn trên mobile */}
+              <div className="hidden sm:grid grid-cols-12 items-center rounded-sm bg-white py-4 px-4 sm:px-9 text-sm capitalize text-gray-500 shadow">
+                <div className="col-span-6 flex items-center">
                   <input
                     type="checkbox"
-                    className="h-5 w-5 accent-orange"
+                    className="h-5 w-5 accent-orange mr-3"
                     checked={isAllChecked}
                     onChange={handleCheckAll}
                   />
+                  <span className="text-black">Sản phẩm</span>
                 </div>
-                <button
-                  className="mx-3 border-none bg-none"
-                  onClick={handleCheckAll}
-                >
-                  Chọn tất cả ({extendedPurchases.length})
-                </button>
-                <button
-                  onClick={handleDeleteManyPurchases}
-                  className="mx-3 border-none bg-none cursor-pointer hover:text-red-400"
-                >
-                  Xóa
-                </button>
+                <div className="col-span-6 grid grid-cols-5 text-center">
+                  <div className="col-span-2">Đơn giá</div>
+                  <div className="col-span-1">Số lượng</div>
+                  <div className="col-span-1">Số tiền</div>
+                  <div className="col-span-1">Thao tác</div>
+                </div>
               </div>
 
-              <div className="mt-5 flex flex-col sm:ml-auto sm:mt-0 sm:flex-row sm:items-center">
-                <div>
-                  <div className="flex items-center sm:justify-end">
-                    <div>
-                      Tổng thanh toán ({totalCheckedPurchase.count} sản phẩm):
+              {/* Danh sách sản phẩm */}
+              <div className="my-3 rounded-sm bg-white p-3 sm:p-5 shadow">
+                {extendedPurchases.map((purchase, index) => (
+                  <div
+                    key={purchase._id}
+                    className="mb-5 grid grid-cols-1 sm:grid-cols-12 gap-4 sm:gap-0 items-center rounded-sm border border-gray-200 bg-white py-4 px-3 sm:px-4 text-sm text-gray-700"
+                  >
+                    {/* Thông tin sản phẩm */}
+                    <div className="sm:col-span-6 flex items-start gap-3">
+                      <input
+                        type="checkbox"
+                        className="h-5 w-5 accent-orange mt-2"
+                        checked={purchase.checked}
+                        onChange={handleCheck(index)}
+                      />
+                      <Link
+                        to={`${path.home}${generateNameId({
+                          name: purchase.product.name,
+                          id: purchase.product._id,
+                        })}`}
+                        className="w-20 h-20 flex-shrink-0 border rounded overflow-hidden"
+                      >
+                        <img
+                          alt={purchase.product.name}
+                          src={purchase.product.image}
+                          className="w-full h-full object-cover"
+                        />
+                      </Link>
+                      <div className="flex-grow">
+                        <Link
+                          to={`${path.home}${generateNameId({
+                            name: purchase.product.name,
+                            id: purchase.product._id,
+                          })}`}
+                          className="line-clamp-2 font-medium text-black"
+                        >
+                          {purchase.product.name}
+                        </Link>
+                        {/* Ẩn header, hiện giá trực tiếp trên mobile */}
+                        <div className="mt-2 flex sm:hidden flex-wrap gap-2 text-sm">
+                          <span className="line-through text-gray-400">
+                            ₫{formatCurrency(purchase.product.price_before_discount)}
+                          </span>
+                          <span className="text-orange font-semibold">
+                            ₫{formatCurrency(purchase.product.price)}
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="ml-2 text-2xl text-orange">
-                      ₫{formatCurrency(totalCheckedPurchase.total)}
+
+                    {/* Giá - số lượng - thành tiền - thao tác */}
+                    <div className="sm:col-span-6 grid grid-cols-2 sm:grid-cols-5 items-center gap-2 sm:gap-0 text-center">
+                      <div className="hidden sm:flex col-span-2 justify-center items-center gap-2">
+                        <span className="text-gray-400 line-through">
+                          ₫{formatCurrency(purchase.product.price_before_discount)}
+                        </span>
+                        <span>₫{formatCurrency(purchase.product.price)}</span>
+                      </div>
+                      <div className="col-span-1 flex justify-center">
+                        <QuantityController
+                          max={purchase.product.quantity}
+                          value={purchase.buy_count}
+                          classNameWrapper="flex items-center"
+                          onIncrease={(value) =>
+                            handleQuantity(index, value, value <= purchase.product.quantity)
+                          }
+                          onDecrease={(value) =>
+                            handleQuantity(index, value, value >= 1)
+                          }
+                          onType={handleTypeQuantity(index)}
+                          onFocusOut={(value) =>
+                            handleQuantity(
+                              index,
+                              value,
+                              value >= 1 &&
+                                value <= purchase.product.quantity &&
+                                value !==
+                                  (purchasesInCart as Purchase[])[index].buy_count
+                            )
+                          }
+                          disabled={purchase.disabled}
+                        />
+                      </div>
+                      <div className="col-span-1 font-semibold text-orange">
+                        ₫{formatCurrency(purchase.product.price * purchase.buy_count)}
+                      </div>
+                      <div className="col-span-1">
+                        <button
+                          onClick={handleDelete(index)}
+                          className="text-red-500 hover:text-red-600 text-sm"
+                        >
+                          Xóa
+                        </button>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex items-center text-sm sm:justify-end">
-                    <div className="text-gray-500">Tiết kiệm</div>
-                    <div className="ml-6 text-orange">
-                      ₫{formatCurrency(totalCheckedPurchaseSavingPrice)}
-                    </div>
-                  </div>
-                </div>
-                <Button
-                  onClick={handleBuyPruchase}
-                  disabled={buyProductMutation.isPending}
-                  className="mt-5 flex h-10 w-52 items-center justify-center bg-red-500 text-sm uppercase text-white hover:bg-red-600 sm:ml-4 sm:mt-0"
-                >
-                  Mua hàng
-                </Button>
+                ))}
               </div>
             </div>
-          </>
-        ) : (
-          <div>
-            <div className="my-10 text-center text-gray-500 text-lg">
-              Giỏ hàng của bạn chưa có sản phẩm
-            </div>
-            <Link to={path.home} className="mx-auto mt-5 flex w-max">
-              <button className="bg-orange-500 text-white text-xl cursor-pointer px-2 py-2 shadow rounded-2xl hover:bg-orange-600">
-                Mua Ngay
-              </button>
-            </Link>
           </div>
-        )}
-      </div>
+
+          {/* Thanh toán */}
+          <div className="sticky bottom-0 z-10 mt-6 sm:mt-8 flex flex-col sm:flex-row sm:items-center rounded-sm border border-gray-100 bg-white p-4 sm:p-5 shadow gap-4 sm:gap-0">
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                className="h-5 w-5 accent-orange mr-3"
+                checked={isAllChecked}
+                onChange={handleCheckAll}
+              />
+              <button className="mx-2" onClick={handleCheckAll}>
+                Chọn tất cả ({extendedPurchases.length})
+              </button>
+              <button
+                onClick={handleDeleteManyPurchases}
+                className="mx-2 text-red-500 hover:text-red-600"
+              >
+                Xóa
+              </button>
+            </div>
+
+            <div className="sm:ml-auto flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+              <div>
+                <div className="flex items-center justify-between sm:justify-end">
+                  <span>
+                    Tổng ({totalCheckedPurchase.count} sản phẩm):
+                  </span>
+                  <span className="ml-2 text-xl sm:text-2xl text-orange font-semibold">
+                    ₫{formatCurrency(totalCheckedPurchase.total)}
+                  </span>
+                </div>
+                <div className="flex items-center text-sm text-gray-500 justify-between sm:justify-end">
+                  <span>Tiết kiệm</span>
+                  <span className="ml-2 text-orange font-medium">
+                    ₫{formatCurrency(totalCheckedPurchaseSavingPrice)}
+                  </span>
+                </div>
+              </div>
+              <Button
+                onClick={handleBuyPruchase}
+                disabled={buyProductMutation.isPending}
+                className="flex h-10 w-full sm:w-52 items-center justify-center bg-red-500 text-sm uppercase text-white hover:bg-red-600 rounded"
+              >
+                Mua hàng
+              </Button>
+            </div>
+          </div>
+        </>
+      ) : (
+        <div className="text-center py-16">
+          <div className="text-gray-500 text-lg">
+            Giỏ hàng của bạn chưa có sản phẩm
+          </div>
+          <Link to={path.home} className="mt-6 inline-block">
+            <button className="bg-orange-500 text-white text-lg px-6 py-3 shadow rounded-2xl hover:bg-orange-600">
+              Mua Ngay
+            </button>
+          </Link>
+        </div>
+      )}
     </div>
-  );
+  </div>
+);
+
 }

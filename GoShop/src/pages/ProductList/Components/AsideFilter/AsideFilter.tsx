@@ -66,12 +66,12 @@ const AsideFilter = ({ categories, queryConfig }: Props) => {
   });
 
   return (
-    <div className="py-4 px-3">
+    <div className="py-4 px-3 bg-white text-gray-900">
       {/* Tất cả danh mục */}
       <Link
         to="/"
         className={`flex items-center font-bold gap-2 ${
-          !category ? "text-orange-500" : ""
+          !category ? "text-black" : "hover:text-gray-300"
         }`}
       >
         <svg
@@ -91,7 +91,7 @@ const AsideFilter = ({ categories, queryConfig }: Props) => {
         Tất cả danh mục
       </Link>
 
-      <div className="bg-gray-300 h-[1px] my-4" />
+      <div className="bg-gray-200 h-[1px] my-4" />
 
       {/* Danh sách category */}
       <ul>
@@ -107,12 +107,12 @@ const AsideFilter = ({ categories, queryConfig }: Props) => {
                     category: cat._id,
                   }).toString(),
                 }}
-                className={`${isActive ? "text-orange-500 font-semibold" : ""}`}
+                className={`${
+                  isActive ? "text-black font-semibold" : "hover:text-gray-500"
+                }`}
               >
                 {isActive && (
-                  <span className="absolute left-0 top-1 text-orange-500">
-                    ›
-                  </span>
+                  <span className="absolute left-0 top-1 text-gray-300">›</span>
                 )}
                 {cat.name}
               </Link>
@@ -122,7 +122,10 @@ const AsideFilter = ({ categories, queryConfig }: Props) => {
       </ul>
 
       {/* Bộ lọc tìm kiếm */}
-      <Link to="/" className="flex items-center font-bold mt-4 uppercase gap-2">
+      <Link
+        to="/"
+        className="flex items-center font-bold mt-4 uppercase gap-2 hover:text-gray-500"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -140,46 +143,42 @@ const AsideFilter = ({ categories, queryConfig }: Props) => {
         Bộ lọc tìm kiếm
       </Link>
 
-      <div className="bg-gray-300 h-[1px] my-4" />
+      <div className="bg-gray-200 h-[1px] my-4" />
 
       {/* Khoảng giá */}
       <div className="my-5">
-        <div>Khoảng giá</div>
+        <div className="font-semibold">Khoảng giá</div>
         <form className="mt-2" onSubmit={onSubmit}>
           <div className="flex flex-col sm:flex-row gap-2">
             <Controller
-              render={({ field }) => {
-                return (
-                  <InputNumber
-                    placeholder="TỪ"
-                    className="w-full sm:flex-1 rounded-xl border border-gray-500"
-                    onChange={(event) => {
-                      field.onChange(event);
-                      trigger("price_max");
-                    }}
-                    value={field.value}
-                  />
-                );
-              }}
+              render={({ field }) => (
+                <InputNumber
+                  placeholder="TỪ"
+                  className="w-full sm:flex-1 rounded-xl border border-gray-400 focus:border-gray-500"
+                  onChange={(event) => {
+                    field.onChange(event);
+                    trigger("price_max");
+                  }}
+                  value={field.value}
+                />
+              )}
               control={control}
               name="price_min"
             />
 
             <Controller
-              render={({ field }) => {
-                return (
-                  <InputNumber
-                    placeholder="Đến"
-                    className="w-full sm:flex-1 rounded-xl border border-gray-500"
-                    onChange={(event) => {
-                      field.onChange(event);
-                      trigger("price_min");
-                    }}
-                    value={field.value}
-                    ref={field.ref}
-                  />
-                );
-              }}
+              render={({ field }) => (
+                <InputNumber
+                  placeholder="ĐẾN"
+                  className="w-full sm:flex-1 rounded-xl border border-gray-400 focus:border-black-400"
+                  onChange={(event) => {
+                    field.onChange(event);
+                    trigger("price_min");
+                  }}
+                  value={field.value}
+                  ref={field.ref}
+                />
+              )}
               control={control}
               name="price_max"
             />
@@ -187,24 +186,24 @@ const AsideFilter = ({ categories, queryConfig }: Props) => {
           <div className="mt-1 text-red-600 min-h-[1.5rem] text-sm text-center">
             {errors.price_min?.message}
           </div>
-          <Button className="bg-orange-500 mt-3 w-full h-10 rounded-2xl text-white uppercase">
+          <Button className=" hover:bg-gray-700 cursor-pointer mt-3 w-full h-10 rounded-2xl text-white uppercase">
             áp dụng
           </Button>
         </form>
       </div>
 
-      <div className="bg-gray-300 h-[1px] my-4" />
+      <div className="bg-gray-200 h-[1px] my-4" />
 
       {/* Đánh giá */}
-      <div className="text-sm">Đánh giá</div>
+      <div className="text-sm font-semibold">Đánh giá</div>
       <RatingStars queryConfig={queryConfig} />
 
-      <div className="bg-gray-300 h-[1px] my-4" />
+      <div className="bg-gray-200 h-[1px] my-4" />
 
       {/* Xóa tất cả */}
       <Button
         onClick={handleRemoveAll}
-        className="bg-orange-500 mt-3 w-full h-10 rounded-2xl text-white uppercase"
+        className="bg-black hover:bg-gray-600 mt-3 w-full cursor-pointer h-10 rounded-2xl text-white uppercase"
       >
         xóa tất cả
       </Button>

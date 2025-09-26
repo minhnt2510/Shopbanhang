@@ -209,7 +209,7 @@ const Profile = () => {
           <div className="mt-6 flex justify-end w-full">
             <button
               type="submit"
-              className="px-6 py-2 bg-orange-500 text-white rounded hover:bg-orange-600"
+              className="px-6 py-2 bg-black text-white rounded hover:bg-gray-600"
             >
               Lưu thay đổi
             </button>
