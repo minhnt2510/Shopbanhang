@@ -1,5 +1,9 @@
 # 🛒 GoShop - Website Mua Sắm Trực Tuyến
 
+## 📷 Giao diện chính
+
+![Giao diện chính](public/screenshot.png)
+
 > **Tác giả:** Nguyễn Tấn Minh  
 > **Email:** tanminh.office183@gmail.com > **GitHub:** https://github.com/minhnt2510
 
