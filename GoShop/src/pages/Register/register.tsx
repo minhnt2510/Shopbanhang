@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form";
 import { registerAccount } from "../../api/auth.api";
 import { AppContext } from "../../Context/app.context";
 import { saveAccesTokenToLS, setProfileToLS } from "../../utils/auth";
+import Seo from "../../components/Seo/Seo";
 
 type FormData = Pick<Schema, "email" | "password" | "confirmPassword">;
 const registerSchema = schema.pick(["email", "password", "confirmPassword"]);
@@ -73,6 +74,11 @@ const Register = () => {
 
   return (
     <div className="bg-gray-200 min-h-screen py-12">
+      <Seo
+        title="Đăng ký"
+        description="Đăng ký tài khoản GoShop để mua sắm và nhận nhiều ưu đãi hấp dẫn."
+        url="/register"
+      />
       <div className="max-w-7xl mx-auto px-4">
         <div className="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
           <div className="text-center mb-6">

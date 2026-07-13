@@ -21,6 +21,7 @@ import { purchasesStatus } from "../../constants/purchase";
 import path from "../../constants/path";
 import ProductRating from "../../components/ProductRating";
 import { AppContext } from "../../Context/app.context";
+import Seo from "../../components/Seo/Seo";
 
 const ProductDetail = () => {
   const queryClient = useQueryClient();
@@ -158,8 +159,59 @@ const ProductDetail = () => {
   };
 
   if (!product) return null;
+
+  const productDescription = product.description
+    ? product.description.replace(/<[^>]*>/g, "").slice(0, 200)
+    : `Mua ${product.name} chính hãng giá tốt tại GoShop.`;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: productDescription,
+    image: product.images?.[0] || "",
+    sku: product._id,
+    brand: {
+      "@type": "Brand",
+      name: "GoShop",
+    },
+    offers: {
+      "@type": "Offer",
+      url: `https://goshopminhntd.vercel.app/${product._id}`,
+      priceCurrency: "VND",
+      price: product.price,
+      priceValidUntil: new Date(
+        new Date().setFullYear(new Date().getFullYear() + 1)
+      ).toISOString().split("T")[0],
+      availability: product.quantity > 0
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock",
+      itemCondition: "https://schema.org/NewCondition",
+    },
+    aggregateRating: product.rating
+      ? {
+          "@type": "AggregateRating",
+          ratingValue: product.rating,
+          bestRating: 5,
+          ratingCount: product.sold || 0,
+        }
+      : undefined,
+  };
+
 return (
   <div className="bg-black/5 py-6">
+      <Seo
+        title={product.name}
+        description={productDescription}
+        keywords={`${product.name}, mua ${product.name}, ${product.category?.name || "sản phẩm"}, GoShop`}
+        image={product.images?.[0] || ""}
+        url={`/${product._id}`}
+        type="product"
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
     <div className="container mx-auto">
       <div className="bg-white p-4 shadow border border-black/20 rounded-lg">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-9">

@@ -1,8 +1,14 @@
 import { Link } from "react-router-dom";
+import Seo from "../../components/Seo/Seo";
 
 const NotFound = () => {
   return (
     <main className="flex h-screen w-full flex-col items-center justify-center">
+      <Seo
+        title="404 - Không tìm thấy trang"
+        description="Trang bạn tìm kiếm không tồn tại hoặc đã bị di chuyển. Quay lại trang chủ GoShop."
+        url="/404"
+      />
       <h1 className="text-9xl font-extrabold tracking-widest text-gray-900">
         404
       </h1>

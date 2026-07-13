@@ -9,6 +9,7 @@ import Paginate from "../../components/Paginate";
 import categoryApi from "../../api/category.api";
 import useQueryConfig from "../../hooks/useQueryConfig";
 import { Menu, X } from "lucide-react";
+import Seo from "../../components/Seo/Seo";
 
 export default function ProductList() {
   // lấy query từ url
@@ -35,20 +36,46 @@ export default function ProductList() {
   const products = productData?.data?.data?.products ?? [];
   const pageSize = productData?.data?.data?.paginate?.page_size ?? 0;
 
+  const websiteJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "GoShop",
+    url: "https://goshopminhntd.vercel.app",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate:
+          "https://goshopminhntd.vercel.app/?search={search_term_string}",
+      },
+      "query-input": "required name=search_term_string",
+    },
+  };
+
   return (
-    <div className="bg-white py-6">
+    <main className="bg-white py-6">
+      <Seo
+        title="Trang chủ"
+        description="GoShop - Mua sắm trực tuyến với hàng ngàn sản phẩm chính hãng giá tốt. Điện thoại, thời trang, đồ điện tử, và nhiều mặt hàng khác."
+        keywords="GoShop, mua sắm online, điện thoại, thời trang, đồ điện tử"
+        url="/"
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+      />
       <div className="container mx-auto">
         <div className="grid grid-cols-12 gap-6">
           {/* AsideFilter cho desktop */}
-          <div className="hidden md:block md:col-span-3">
+          <aside className="hidden md:block md:col-span-3">
             <AsideFilter
               categories={categoriesData?.data.data || []}
               queryConfig={queryConfig}
             />
-          </div>
+          </aside>
 
           {/* Main content */}
-          <div className="col-span-12 md:col-span-9">
+          <section className="col-span-12 md:col-span-9">
             {/* Nút mở filter cho mobile */}
             <div className="mb-4 flex items-center justify-between md:hidden">
               <button
@@ -65,22 +92,23 @@ export default function ProductList() {
             {/* Danh sách sản phẩm */}
             <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
               {products.map((product) => (
-                <div className="col-span-1" key={product._id}>
+                <article className="col-span-1" key={product._id}>
                   <div className="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition">
                     <Product product={product} />
                   </div>
-                </div>
+                </article>
               ))}
             </div>
-
             {/* Pagination */}
-            <Paginate
-              page={page}
-              setPage={setPage}
-              pageSize={pageSize}
-              queryConfig={queryConfig}
-            />
-          </div>
+            <nav aria-label="Phân trang sản phẩm">
+              <Paginate
+                page={page}
+                setPage={setPage}
+                pageSize={pageSize}
+                queryConfig={queryConfig}
+              />
+            </nav>
+          </section>
         </div>
       </div>
 
@@ -94,7 +122,7 @@ export default function ProductList() {
           ></div>
 
           {/* content */}
-          <div className="relative bg-white w-3/4 max-w-xs h-full p-4 shadow-lg z-50 overflow-y-auto">
+          <aside className="relative bg-white w-3/4 max-w-xs h-full p-4 shadow-lg z-50 overflow-y-auto">
             <button
               onClick={() => setShowFilter(false)}
               className="absolute top-3 right-3 text-black"
@@ -105,9 +133,9 @@ export default function ProductList() {
               categories={categoriesData?.data.data || []}
               queryConfig={queryConfig}
             />
-          </div>
+          </aside>
         </div>
       )}
-    </div>
+    </main>
   );
 }

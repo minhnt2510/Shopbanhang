@@ -11,6 +11,7 @@ import { useContext, useEffect } from "react";
 import { produce } from "immer";
 import keyBy from "lodash/keyBy";
 import { AppContext } from "../../Context/app.context";
+import Seo from "../../components/Seo/Seo";
 
 export default function Cart() {
   const { extendedPurchases, setExtendedPurchases } = useContext(AppContext);
@@ -164,6 +165,11 @@ export default function Cart() {
 
  return (
   <div className="bg-neutral-100 py-8 sm:py-16">
+      <Seo
+        title="Giỏ hàng"
+        description="Xem giỏ hàng và thanh toán trực tuyến tại GoShop. Mua sắm tiện lợi, giao hàng nhanh chóng."
+        url="/cart"
+      />
     <div className="container mx-auto">
       {extendedPurchases.length > 0 ? (
         <>

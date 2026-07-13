@@ -9,6 +9,7 @@ import { useContext } from "react";
 import { AppContext } from "../../Context/app.context";
 import { loginAccount } from "../../api/auth.api";
 import { saveAccesTokenToLS, setProfileToLS } from "../../utils/auth";
+import Seo from "../../components/Seo/Seo";
 
 type FormData = Pick<Schema, "email" | "password">;
 const loginSchema = schema.pick(["email", "password"]);
@@ -67,6 +68,11 @@ const Login = () => {
 
   return (
     <div className="bg-gray-200 min-h-screen py-12">
+      <Seo
+        title="Đăng nhập"
+        description="Đăng nhập tài khoản GoShop để mua sắm và quản lý đơn hàng."
+        url="/login"
+      />
       <div className="max-w-7xl mx-auto px-4">
         <div className="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
           <div className="text-center mb-6">
